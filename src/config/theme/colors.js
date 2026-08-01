@@ -1,0 +1,16 @@
+export const colors = Object.freeze({
+  primary: "#0F172A",
+  primaryBlue: "#2563EB",
+  secondaryBlue: "#3B82F6",
+  success: "#10B981",
+  background: "#FFFFFF",
+  surface: "#F8FAFC",
+  surfaceSecondary: "#F1F5F9",
+  border: "#E2E8F0",
+  textPrimary: "#111827",
+  textSecondary: "#475569",
+  muted: "#64748B",
+  error: "#DC2626",
+  warning: "#F59E0B",
+  overlay: "rgb(15 23 42 / 0.7)",
+});

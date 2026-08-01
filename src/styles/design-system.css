@@ -1,0 +1,41 @@
+@layer components {
+  .ws-card-interactive {
+    transition:
+      transform var(--ws-animation-duration-base) var(--ws-animation-easing-standard),
+      box-shadow var(--ws-animation-duration-base) var(--ws-animation-easing-standard);
+  }
+
+  .ws-card-interactive:hover {
+    box-shadow: var(--ws-shadow-card-hover);
+    transform: var(--ws-animation-card-hover-transform);
+  }
+
+  .ws-section-entrance {
+    animation: ws-section-enter var(--ws-animation-duration-slow)
+      var(--ws-animation-easing-entrance) both;
+  }
+
+  @keyframes ws-section-enter {
+    from {
+      opacity: 0;
+      transform: translateY(var(--ws-spacing-16));
+    }
+
+    to {
+      opacity: 1;
+      transform: translateY(var(--ws-spacing-0));
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .ws-card-interactive,
+    .ws-section-entrance {
+      animation: none;
+      transition: none;
+    }
+
+    .ws-card-interactive:hover {
+      transform: none;
+    }
+  }
+}

@@ -1,0 +1,14 @@
+export const spacing = Object.freeze({
+  0: "0",
+  4: "0.25rem",
+  8: "0.5rem",
+  16: "1rem",
+  24: "1.5rem",
+  32: "2rem",
+  40: "2.5rem",
+  48: "3rem",
+  64: "4rem",
+  80: "5rem",
+  96: "6rem",
+  120: "7.5rem",
+});
