@@ -30,7 +30,7 @@ export default function Footer({ brand = "WorkSync", className, legal, linkGroup
                   <li key={link.label}>
                     <a
                       className={cn(
-                        "text-[var(--ws-colors-surface-secondary)] hover:text-[var(--ws-colors-background)]",
+                        "text-[var(--ws-colors-surface-secondary)] transition-colors duration-[var(--ws-animation-duration-fast)] ease-[var(--ws-animation-easing-standard)] hover:text-[var(--ws-colors-background)]",
                         focusRing,
                       )}
                       href={link.href}

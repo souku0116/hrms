@@ -106,7 +106,14 @@ export default function Home() {
         }
         description={hero.description}
         eyebrow={hero.eyebrow}
-        media={<ResponsiveImage {...hero.media} priority sizes="(min-width: 1024px) 50vw, 100vw" />}
+        media={
+          <ResponsiveImage
+            {...hero.media}
+            priority
+            sizes="(min-width: 1024px) 50vw, 100vw"
+            containerClassName="shadow-[var(--ws-shadow-card)] ring-1 ring-[var(--ws-colors-border)]"
+          />
+        }
         title={hero.headline}
       />
 
@@ -124,7 +131,10 @@ export default function Home() {
             </div>
             <div className="grid gap-[var(--ws-spacing-16)] sm:grid-cols-3">
               {trustItems.map((item) => (
-                <Card className="space-y-[var(--ws-spacing-16)]" key={item.title}>
+                <Card
+                  className="flex h-full flex-col space-y-[var(--ws-spacing-16)]"
+                  key={item.title}
+                >
                   <IconWrapper icon={item.icon} size="sm" />
                   <div className="space-y-[var(--ws-spacing-8)]">
                     <Heading as="h3" level="h4">
@@ -195,7 +205,7 @@ export default function Home() {
 
       <div id="technology">
         <SectionLayout animate spacing="lg" tone="secondary">
-          <div className="grid items-center gap-[var(--ws-spacing-48)] lg:grid-cols-2">
+          <div className="grid items-center gap-[var(--ws-spacing-32)] lg:grid-cols-2 lg:gap-[var(--ws-spacing-48)]">
             <div className="max-w-[var(--ws-breakpoints-content-md)]">
               <p className={eyebrowClassName}>{technology.eyebrow}</p>
               <Heading as="h2" level="h2">
@@ -216,7 +226,11 @@ export default function Home() {
                 ))}
               </div>
             </div>
-            <ResponsiveImage {...technology.media} sizes="(min-width: 1024px) 50vw, 100vw" />
+            <ResponsiveImage
+              {...technology.media}
+              sizes="(min-width: 1024px) 50vw, 100vw"
+              containerClassName="shadow-[var(--ws-shadow-card)] ring-1 ring-[var(--ws-colors-border)]"
+            />
           </div>
         </SectionLayout>
       </div>

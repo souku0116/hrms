@@ -1,3 +1,6 @@
+import { heroSample2 } from "@/assets/images";
+import { hrmsScreen } from "@/assets/images";
+
 export const homepageContent = {
   navigation: {
     brand: "WorkSync",
@@ -29,10 +32,10 @@ export const homepageContent = {
     secondaryCta: { href: "#process", label: "See how WorkSync works" },
     media: {
       alt: "Workforce planning discussion in a modern workplace",
-      aspect: "hero",
-      assetPath: "src/assets/images/hero/hero-main.webp",
+      aspect: "standard",
+      assetPath: "src/assets/images/illustrations/heroSample2.png",
       fallbackLabel: "Hero Image",
-      src: null,
+      src: heroSample2,
     },
   },
   trust: {
@@ -195,10 +198,10 @@ export const homepageContent = {
     secondaryCta: { href: "#services", label: "Explore workforce support" },
     media: {
       alt: "WorkSync platform dashboard preview",
-      aspect: "dashboard",
-      assetPath: "src/assets/images/technology/hr-dashboard.webp",
+      aspect: "standard",
+      assetPath: "src/assets/images/dashboard/hrmsScreen.png",
       fallbackLabel: "Dashboard Preview",
-      src: null,
+      src: hrmsScreen,
     },
     items: [
       {

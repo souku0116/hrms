@@ -46,6 +46,8 @@ export default function Navbar({
           <a
             className={cn(
               "font-[var(--ws-typography-font-weight-semibold)] text-[length:var(--ws-typography-h4-font-size)]",
+              "transition-colors duration-[var(--ws-animation-duration-fast)] ease-[var(--ws-animation-easing-standard)]",
+              "hover:text-[var(--ws-colors-primary-blue)]",
               focusRing,
               textClass,
             )}
@@ -62,6 +64,8 @@ export default function Navbar({
                     className={cn(
                       "flex cursor-pointer list-none items-center gap-[var(--ws-spacing-4)]",
                       "text-[length:var(--ws-typography-small-font-size)]",
+                      "transition-colors duration-[var(--ws-animation-duration-fast)] ease-[var(--ws-animation-easing-standard)]",
+                      "hover:text-[var(--ws-colors-primary-blue)]",
                       textClass,
                       focusRing,
                     )}
@@ -69,7 +73,9 @@ export default function Navbar({
                     {label}
                     <ChevronDown
                       aria-hidden="true"
-                      className="size-[var(--ws-spacing-16)] group-open:rotate-180"
+                      className={cn(
+                        "size-[var(--ws-spacing-16)] transition-transform duration-[var(--ws-animation-duration-base)] ease-[var(--ws-animation-easing-standard)] group-open:rotate-180",
+                      )}
                     />
                   </summary>
                   <div
@@ -80,8 +86,9 @@ export default function Navbar({
                       <a
                         className={cn(
                           "block rounded-[var(--ws-radius-sm)] px-[var(--ws-spacing-16)] py-[var(--ws-spacing-8)]",
-                          "text-[var(--ws-colors-text-secondary)] hover:bg-[var(--ws-colors-surface-secondary)]",
-                          "hover:text-[var(--ws-colors-text-primary)]",
+                          "text-[var(--ws-colors-text-secondary)]",
+                          "transition-colors duration-[var(--ws-animation-duration-fast)] ease-[var(--ws-animation-easing-standard)]",
+                          "hover:bg-[var(--ws-colors-surface-secondary)] hover:text-[var(--ws-colors-text-primary)]",
                           focusRing,
                         )}
                         href={item.href}
@@ -96,7 +103,9 @@ export default function Navbar({
               ) : (
                 <a
                   className={cn(
-                    "text-[length:var(--ws-typography-small-font-size)] hover:text-[var(--ws-colors-primary-blue)]",
+                    "text-[length:var(--ws-typography-small-font-size)]",
+                    "transition-colors duration-[var(--ws-animation-duration-fast)] ease-[var(--ws-animation-easing-standard)]",
+                    "hover:text-[var(--ws-colors-primary-blue)]",
                     focusRing,
                     textClass,
                   )}

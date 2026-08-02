@@ -18,7 +18,11 @@ export default function Industries({ description, items = [], title }) {
       </div>
       <div className="mt-[var(--ws-spacing-32)] grid gap-[var(--ws-spacing-16)] sm:grid-cols-2 lg:grid-cols-4">
         {items.map(({ description: itemDescription, icon, title: itemTitle }) => (
-          <Card className="space-y-[var(--ws-spacing-16)]" interactive key={itemTitle}>
+          <Card
+            className="flex h-full flex-col space-y-[var(--ws-spacing-16)]"
+            interactive
+            key={itemTitle}
+          >
             {icon ? <IconWrapper icon={icon} /> : null}
             <Heading as="h3" level="h4">
               {itemTitle}

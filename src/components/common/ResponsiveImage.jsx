@@ -6,12 +6,14 @@ const aspectRatios = {
   dashboard: "aspect-[16/10]",
   hero: "aspect-[5/4]",
   portrait: "aspect-square",
+  standard: "aspect-[3/2]",
   wide: "aspect-[16/9]",
 };
 
 /**
  * Media wrapper with stable tokenized placeholders until a local, CDN, or storage URL is available.
  * Pass `src` once an approved asset exists; an unavailable source automatically returns to the placeholder.
+ * Supports responsive `srcSet`/`sizes` delivery and a reduced-motion-safe fade-in on load.
  */
 export default function ResponsiveImage({
   alt,
@@ -23,8 +25,10 @@ export default function ResponsiveImage({
   priority = false,
   sizes = "100vw",
   src,
+  srcSet,
 }) {
   const [hasError, setHasError] = useState(false);
+  const [isLoaded, setIsLoaded] = useState(false);
   const showImage = Boolean(src) && !hasError;
 
   useEffect(() => {
@@ -42,13 +46,19 @@ export default function ResponsiveImage({
       {showImage ? (
         <img
           alt={alt}
-          className={cn("size-full object-cover", className)}
+          className={cn(
+            "ws-image-fade size-full object-cover",
+            isLoaded && "ws-image-loaded",
+            className,
+          )}
           decoding="async"
           fetchPriority={priority ? "high" : "auto"}
           loading={priority ? "eager" : loading}
           onError={() => setHasError(true)}
+          onLoad={() => setIsLoaded(true)}
           sizes={sizes}
           src={src}
+          srcSet={srcSet}
         />
       ) : (
         <div

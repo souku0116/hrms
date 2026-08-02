@@ -15,7 +15,7 @@ export default function WhyWorkSync({ description, features = [], title }) {
           </Paragraph>
         ) : null}
       </div>
-      <div className="mt-[var(--ws-spacing-32)] grid gap-[var(--ws-spacing-24)] md:grid-cols-2 lg:grid-cols-3">
+      <div className="mt-[var(--ws-spacing-32)] grid gap-[var(--ws-spacing-24)] md:grid-cols-2">
         {features.map((feature) => (
           <FeatureCard {...feature} key={feature.title} />
         ))}

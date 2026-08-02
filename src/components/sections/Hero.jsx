@@ -8,7 +8,10 @@ export default function Hero({ actions, className, description, eyebrow, media, 
   return (
     <SectionLayout className={className} spacing="xl" tone="surface">
       <div
-        className={cn("grid items-center gap-[var(--ws-spacing-48)]", media && "lg:grid-cols-2")}
+        className={cn(
+          "grid items-center gap-[var(--ws-spacing-32)]",
+          media && "lg:grid-cols-2 lg:gap-[var(--ws-spacing-48)]",
+        )}
       >
         <div className="max-w-[var(--ws-breakpoints-content-md)]">
           {eyebrow ? (

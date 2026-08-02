@@ -10,6 +10,15 @@
     transform: var(--ws-animation-card-hover-transform);
   }
 
+  .ws-image-fade {
+    opacity: 0;
+    transition: opacity var(--ws-animation-duration-base) var(--ws-animation-easing-standard);
+  }
+
+  .ws-image-loaded {
+    opacity: 1;
+  }
+
   .ws-section-entrance {
     animation: ws-section-enter var(--ws-animation-duration-slow)
       var(--ws-animation-easing-entrance) both;
@@ -36,6 +45,11 @@
 
     .ws-card-interactive:hover {
       transform: none;
+    }
+
+    .ws-image-fade {
+      opacity: 1;
+      transition: none;
     }
   }
 }
