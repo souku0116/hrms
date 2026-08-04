@@ -1,55 +1,31 @@
-@layer components {
-  .ws-card-interactive {
-    transition:
-      transform var(--ws-animation-duration-base) var(--ws-animation-easing-standard),
-      box-shadow var(--ws-animation-duration-base) var(--ws-animation-easing-standard);
+@layer utilities {
+  .glass {
+    background-color: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.04);
   }
-
-  .ws-card-interactive:hover {
-    box-shadow: var(--ws-shadow-card-hover);
-    transform: var(--ws-animation-card-hover-transform);
+  
+  .glass-dark {
+    background-color: rgba(15, 23, 42, 0.7);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
   }
-
-  .ws-image-fade {
-    opacity: 0;
-    transition: opacity var(--ws-animation-duration-base) var(--ws-animation-easing-standard);
+  
+  .premium-shadow {
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03), 0 1px 2px rgba(0, 0, 0, 0.02);
+    transition: box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1), transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
-
-  .ws-image-loaded {
-    opacity: 1;
+  
+  .premium-shadow:hover {
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.06), 0 2px 4px rgba(0, 0, 0, 0.03);
+    transform: translateY(-2px);
   }
-
-  .ws-section-entrance {
-    animation: ws-section-enter var(--ws-animation-duration-slow)
-      var(--ws-animation-easing-entrance) both;
-  }
-
-  @keyframes ws-section-enter {
-    from {
-      opacity: 0;
-      transform: translateY(var(--ws-spacing-16));
-    }
-
-    to {
-      opacity: 1;
-      transform: translateY(var(--ws-spacing-0));
-    }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .ws-card-interactive,
-    .ws-section-entrance {
-      animation: none;
-      transition: none;
-    }
-
-    .ws-card-interactive:hover {
-      transform: none;
-    }
-
-    .ws-image-fade {
-      opacity: 1;
-      transition: none;
-    }
+  
+  .text-balance {
+    text-wrap: balance;
   }
 }

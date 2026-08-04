@@ -1,2 +1,35 @@
 @import "tailwindcss" source(none);
-@source "../**/*.{js,jsx}";
+@source "../**/*.{js,jsx,ts,tsx}";
+
+@theme {
+  --font-sans: "Inter", sans-serif;
+  --font-heading: "Plus Jakarta Sans", sans-serif;
+
+  --color-primary: #173A8C;
+  --color-primary-foreground: #FFFFFF;
+  --color-secondary: #5B5BD6;
+  --color-secondary-foreground: #FFFFFF;
+  --color-accent: #8B5CF6;
+  --color-accent-foreground: #FFFFFF;
+  --color-background: #F8FAFC;
+  --color-foreground: #0F172A;
+  --color-dark: #0F172A;
+  --color-success: #10B981;
+  --color-danger: #EF4444;
+  --color-warning: #F59E0B;
+  --color-card: #FFFFFF;
+  --color-card-foreground: #0F172A;
+  --color-border: #E2E8F0;
+  --color-input: #E2E8F0;
+  --color-ring: #173A8C;
+  
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+}
+
+@layer base {
+  :root {
+    --radius: 0.5rem;
+  }
+}
