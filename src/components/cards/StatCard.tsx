@@ -20,9 +20,7 @@ const StatCard = React.forwardRef<HTMLDivElement, StatCardProps>(
       <Card ref={ref} className={cn("overflow-hidden premium-shadow", className)} {...props}>
         <CardContent className="p-6">
           <div className="flex items-center justify-between space-y-0 pb-2">
-            <h3 className="text-sm font-medium tracking-tight text-muted-foreground">
-              {title}
-            </h3>
+            <h3 className="text-sm font-medium tracking-tight text-muted-foreground">{title}</h3>
             {icon && (
               <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center text-primary">
                 {icon}
@@ -47,15 +45,13 @@ const StatCard = React.forwardRef<HTMLDivElement, StatCardProps>(
                   {trend.value}%
                 </span>
               )}
-              {description && (
-                <span className="text-muted-foreground">{description}</span>
-              )}
+              {description && <span className="text-muted-foreground">{description}</span>}
             </div>
           </div>
         </CardContent>
       </Card>
     );
-  }
+  },
 );
 StatCard.displayName = "StatCard";
 

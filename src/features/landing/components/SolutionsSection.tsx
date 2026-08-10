@@ -29,7 +29,8 @@ export default function SolutionsSection() {
               className={cn(
                 "group relative overflow-hidden rounded-2xl border border-[var(--ws-colors-border)] bg-white p-7",
                 "transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_16px_40px_rgba(15,23,42,0.1)]",
-                title === "Analytics" && "sm:last:col-span-2 lg:last:col-span-1 lg:last:col-start-2",
+                title === "Analytics" &&
+                  "sm:last:col-span-2 lg:last:col-span-1 lg:last:col-start-2",
               )}
             >
               <div className="absolute inset-x-0 top-0 h-0.5 bg-gradient-to-r from-transparent via-[var(--ws-colors-primary-blue)] to-transparent opacity-0 transition-opacity group-hover:opacity-100" />

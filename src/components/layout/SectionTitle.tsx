@@ -19,21 +19,17 @@ const SectionTitle = React.forwardRef<HTMLDivElement, SectionTitleProps>(
             "items-center text-center": align === "center",
             "items-end text-right": align === "right",
           },
-          className
+          className,
         )}
         {...props}
       >
-        <h2 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
-          {title}
-        </h2>
+        <h2 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">{title}</h2>
         {description && (
-          <p className="text-lg text-muted-foreground max-w-[85%] text-balance">
-            {description}
-          </p>
+          <p className="text-lg text-muted-foreground max-w-[85%] text-balance">{description}</p>
         )}
       </div>
     );
-  }
+  },
 );
 SectionTitle.displayName = "SectionTitle";
 

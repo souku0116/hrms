@@ -56,26 +56,22 @@ export const solutions = [
   {
     icon: Wallet,
     title: "Payroll",
-    description:
-      "Automated payroll cycles compliant with local regulations, taxes and benefits.",
+    description: "Automated payroll cycles compliant with local regulations, taxes and benefits.",
   },
   {
     icon: CalendarCheck,
     title: "Attendance",
-    description:
-      "Real-time attendance tracking with smart scheduling and leave management.",
+    description: "Real-time attendance tracking with smart scheduling and leave management.",
   },
   {
     icon: TrendingUp,
     title: "Performance",
-    description:
-      "Continuous performance reviews, goal tracking and feedback loops in one place.",
+    description: "Continuous performance reviews, goal tracking and feedback loops in one place.",
   },
   {
     icon: GraduationCap,
     title: "Learning",
-    description:
-      "Skill development and onboarding programs that keep your workforce future-ready.",
+    description: "Skill development and onboarding programs that keep your workforce future-ready.",
   },
   {
     icon: BarChart3,
@@ -147,14 +143,30 @@ export const platformFeatures = [
 
 /** Industries grid. */
 export const industries = [
-  { icon: HeartPulse, title: "Healthcare", description: "Compliant staffing and credential tracking." },
+  {
+    icon: HeartPulse,
+    title: "Healthcare",
+    description: "Compliant staffing and credential tracking.",
+  },
   { icon: Cpu, title: "IT", description: "Hire specialized talent at scale with speed." },
   { icon: ShoppingBag, title: "Retail", description: "Flexible staffing for seasonal demand." },
-  { icon: Factory, title: "Manufacturing", description: "Shift planning and workforce compliance." },
-  { icon: EducationIcon, title: "Education", description: "Credentialed hiring and faculty records." },
+  {
+    icon: Factory,
+    title: "Manufacturing",
+    description: "Shift planning and workforce compliance.",
+  },
+  {
+    icon: EducationIcon,
+    title: "Education",
+    description: "Credentialed hiring and faculty records.",
+  },
   { icon: Truck, title: "Logistics", description: "Real-time dispatch and attendance tracking." },
   { icon: Landmark, title: "Finance", description: "Audit-ready payroll and compliance controls." },
-  { icon: ShoppingCart, title: "E-commerce", description: "Scale customer support teams efficiently." },
+  {
+    icon: ShoppingCart,
+    title: "E-commerce",
+    description: "Scale customer support teams efficiently.",
+  },
 ];
 
 /** AI recruitment workflow steps. */
@@ -171,26 +183,22 @@ export const growthTimeline = [
   {
     period: "Phase 1",
     title: "Automation",
-    description:
-      "Automate repetitive HR tasks so your team focuses on people, not paperwork.",
+    description: "Automate repetitive HR tasks so your team focuses on people, not paperwork.",
   },
   {
     period: "Phase 2",
     title: "Hiring",
-    description:
-      "Scale hiring with AI-assisted sourcing and a rich candidate pipeline.",
+    description: "Scale hiring with AI-assisted sourcing and a rich candidate pipeline.",
   },
   {
     period: "Phase 3",
     title: "Payroll",
-    description:
-      "Streamline payroll with automated, compliant, error-free cycles.",
+    description: "Streamline payroll with automated, compliant, error-free cycles.",
   },
   {
     period: "Phase 4",
     title: "Scaling",
-    description:
-      "Grow with confidence using workforce analytics that guide every decision.",
+    description: "Grow with confidence using workforce analytics that guide every decision.",
   },
 ];
 

@@ -55,8 +55,8 @@ export default function HeroSection() {
             variants={fadeUp}
             className="mt-6 max-w-xl text-lg leading-relaxed text-[var(--ws-colors-text-secondary)]"
           >
-            WorkSync is the AI-powered HR platform that unifies recruitment, payroll,
-            attendance and performance — so your team can focus on people, not paperwork.
+            WorkSync is the AI-powered HR platform that unifies recruitment, payroll, attendance and
+            performance — so your team can focus on people, not paperwork.
           </motion.p>
 
           <motion.div variants={fadeUp} className="mt-8 flex flex-wrap items-center gap-3">

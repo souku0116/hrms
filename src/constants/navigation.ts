@@ -6,7 +6,7 @@ import {
   Calendar,
   Settings,
   HelpCircle,
-  FileText
+  FileText,
 } from "lucide-react";
 
 export interface NavItem {

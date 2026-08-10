@@ -5,24 +5,24 @@
   --font-sans: "Inter", sans-serif;
   --font-heading: "Plus Jakarta Sans", sans-serif;
 
-  --color-primary: #173A8C;
-  --color-primary-foreground: #FFFFFF;
-  --color-secondary: #5B5BD6;
-  --color-secondary-foreground: #FFFFFF;
-  --color-accent: #8B5CF6;
-  --color-accent-foreground: #FFFFFF;
-  --color-background: #F8FAFC;
-  --color-foreground: #0F172A;
-  --color-dark: #0F172A;
-  --color-success: #10B981;
-  --color-danger: #EF4444;
-  --color-warning: #F59E0B;
-  --color-card: #FFFFFF;
-  --color-card-foreground: #0F172A;
-  --color-border: #E2E8F0;
-  --color-input: #E2E8F0;
-  --color-ring: #173A8C;
-  
+  --color-primary: #173a8c;
+  --color-primary-foreground: #ffffff;
+  --color-secondary: #5b5bd6;
+  --color-secondary-foreground: #ffffff;
+  --color-accent: #8b5cf6;
+  --color-accent-foreground: #ffffff;
+  --color-background: #f8fafc;
+  --color-foreground: #0f172a;
+  --color-dark: #0f172a;
+  --color-success: #10b981;
+  --color-danger: #ef4444;
+  --color-warning: #f59e0b;
+  --color-card: #ffffff;
+  --color-card-foreground: #0f172a;
+  --color-border: #e2e8f0;
+  --color-input: #e2e8f0;
+  --color-ring: #173a8c;
+
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
