@@ -135,4 +135,4 @@ Vercel uses `npm run build`, deploys `dist/`, serves files under `api/` as serve
 4. Apply those variables to **Production** and **Preview**, then redeploy if the first build failed or the site shows a configuration screen.
 5. In Supabase, add your Vercel domain(s) under **Authentication → URL Configuration → Redirect URLs** so login works in production.
 
-If env vars are missing during a Vercel build, the build now fails with a clear error instead of publishing a blank page.
+If env vars are missing during a Vercel build, the build still completes and the deployed site shows a configuration screen with setup instructions. Local `npm run dev` fails fast when `.env.local` is missing.

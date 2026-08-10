@@ -17,10 +17,17 @@ function validateClientEnv(mode) {
   }
 
   const target = process.env.VERCEL ? "Vercel project settings" : ".env.local";
-  throw new Error(
+  const message =
     `Missing required environment variables: ${missing.join(", ")}. ` +
-      `Add them in ${target} and redeploy.`,
-  );
+    `Add them in ${target} and redeploy.`;
+
+  // Fail fast in local dev; allow production builds so Vercel previews can deploy
+  // and the runtime ConfigError screen can guide setup.
+  if (mode === "development") {
+    throw new Error(message);
+  }
+
+  console.warn(`[vite] ${message}`);
 }
 
 export default defineConfig(({ mode }) => {
