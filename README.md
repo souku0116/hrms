@@ -120,4 +120,19 @@ Components use passed data and composition props; keep queries, mutations, route
 
 ## Deployment
 
-Vercel uses `npm run build`, deploys `dist/`, serves files under `api/` as serverless functions, and rewrites non-API paths to `index.html` so future React Router routes support direct navigation.
+Vercel uses `npm run build`, deploys `dist/`, serves files under `api/` as serverless functions, and rewrites non-API paths to `index.html` so React Router routes support direct navigation.
+
+### Deploy to Vercel
+
+1. Push this repository to GitHub and import it in [Vercel](https://vercel.com/new).
+2. Keep the defaults Vercel detects for Vite:
+   - **Build Command:** `npm run build`
+   - **Output Directory:** `dist`
+3. Before the first deploy finishes, open **Project Settings → Environment Variables** and add:
+   - `VITE_SUPABASE_URL` — Supabase project URL
+   - `VITE_SUPABASE_ANON_KEY` — Supabase anon/public key
+   - `DATABASE_URL` — optional until a serverless route uses `db.js`
+4. Apply those variables to **Production** and **Preview**, then redeploy if the first build failed or the site shows a configuration screen.
+5. In Supabase, add your Vercel domain(s) under **Authentication → URL Configuration → Redirect URLs** so login works in production.
+
+If env vars are missing during a Vercel build, the build still completes and the deployed site shows a configuration screen with setup instructions. Local `npm run dev` fails fast when `.env.local` is missing.
