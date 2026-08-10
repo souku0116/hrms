@@ -32,9 +32,7 @@ export default function GrowthSection() {
                   key={title}
                   variants={fadeUp}
                   className={`relative flex items-start gap-6 pl-12 md:w-1/2 md:pl-0 ${
-                    isLeft
-                      ? "md:mr-auto md:pr-10 md:text-right"
-                      : "md:ml-auto md:pl-10"
+                    isLeft ? "md:mr-auto md:pr-10 md:text-right" : "md:ml-auto md:pl-10"
                   }`}
                 >
                   {/* Dot */}

@@ -2,26 +2,22 @@ import * as React from "react";
 import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "../../lib/utils";
 
-const avatarVariants = cva(
-  "relative flex shrink-0 overflow-hidden rounded-full bg-muted",
-  {
-    variants: {
-      size: {
-        default: "h-10 w-10",
-        sm: "h-8 w-8",
-        lg: "h-12 w-12",
-        xl: "h-16 w-16",
-      },
+const avatarVariants = cva("relative flex shrink-0 overflow-hidden rounded-full bg-muted", {
+  variants: {
+    size: {
+      default: "h-10 w-10",
+      sm: "h-8 w-8",
+      lg: "h-12 w-12",
+      xl: "h-16 w-16",
     },
-    defaultVariants: {
-      size: "default",
-    },
-  }
-);
+  },
+  defaultVariants: {
+    size: "default",
+  },
+});
 
 export interface AvatarProps
-  extends React.HTMLAttributes<HTMLDivElement>,
-    VariantProps<typeof avatarVariants> {
+  extends React.HTMLAttributes<HTMLDivElement>, VariantProps<typeof avatarVariants> {
   src?: string;
   alt?: string;
   fallback?: React.ReactNode;
@@ -32,11 +28,7 @@ const Avatar = React.forwardRef<HTMLDivElement, AvatarProps>(
     const [imageError, setImageError] = React.useState(false);
 
     return (
-      <div
-        ref={ref}
-        className={cn(avatarVariants({ size, className }))}
-        {...props}
-      >
+      <div ref={ref} className={cn(avatarVariants({ size, className }))} {...props}>
         {src && !imageError ? (
           <img
             src={src}
@@ -51,7 +43,7 @@ const Avatar = React.forwardRef<HTMLDivElement, AvatarProps>(
         )}
       </div>
     );
-  }
+  },
 );
 Avatar.displayName = "Avatar";
 

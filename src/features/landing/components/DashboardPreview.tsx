@@ -181,9 +181,7 @@ const PayrollWidget = memo(function PayrollWidget() {
 const AttendanceWidget = memo(function AttendanceWidget() {
   return (
     <div className="space-y-2">
-      <p className="text-[11px] font-semibold text-[var(--ws-colors-text-primary)]">
-        Attendance
-      </p>
+      <p className="text-[11px] font-semibold text-[var(--ws-colors-text-primary)]">Attendance</p>
       <div className="flex items-center justify-between rounded-lg border border-[var(--ws-colors-border)] bg-[var(--ws-colors-surface)] p-2">
         <div className="flex items-center gap-2">
           <Clock className="h-4 w-4 text-[var(--ws-colors-warning)]" />
@@ -234,7 +232,9 @@ const AIHiringWidget = memo(function AIHiringWidget() {
               transition={{ duration: 1.4, ease: "easeOut" }}
             />
           </svg>
-          <span className="absolute text-xs font-bold text-[var(--ws-colors-text-primary)]">92</span>
+          <span className="absolute text-xs font-bold text-[var(--ws-colors-text-primary)]">
+            92
+          </span>
         </div>
         <div className="space-y-1">
           <p className="text-[11px] font-medium text-[var(--ws-colors-text-primary)]">

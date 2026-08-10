@@ -43,7 +43,7 @@ export function Modal({ isOpen, onClose, title, description, children, className
               transition={{ type: "spring", duration: 0.5, bounce: 0.3 }}
               className={cn(
                 "w-full max-w-lg rounded-xl border bg-card p-6 text-card-foreground shadow-lg pointer-events-auto",
-                className
+                className,
               )}
             >
               <div className="flex flex-col space-y-1.5 mb-4">

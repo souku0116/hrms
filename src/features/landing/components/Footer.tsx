@@ -14,7 +14,7 @@ export default function Footer() {
   const [email, setEmail] = useState("");
   const [subscribed, setSubscribed] = useState(false);
 
-const handleSubscribe = (e: FormEvent) => {
+  const handleSubscribe = (e: FormEvent) => {
     e.preventDefault();
     if (email.trim()) {
       setSubscribed(true);
@@ -40,10 +40,7 @@ const handleSubscribe = (e: FormEvent) => {
             </p>
 
             <form className="mt-6" onSubmit={handleSubscribe}>
-              <label
-                htmlFor="newsletter"
-                className="block text-sm font-medium text-white/80"
-              >
+              <label htmlFor="newsletter" className="block text-sm font-medium text-white/80">
                 Subscribe to our newsletter
               </label>
               <div className="mt-2 flex gap-2">

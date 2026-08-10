@@ -114,7 +114,9 @@ export default function PlatformFeatures() {
                   <p className="text-sm font-medium text-[var(--ws-colors-text-primary)]">
                     {current.headline}
                   </p>
-                  <p className="mt-1 text-sm text-[var(--ws-colors-muted)]">{current.description}</p>
+                  <p className="mt-1 text-sm text-[var(--ws-colors-muted)]">
+                    {current.description}
+                  </p>
                 </div>
               </motion.div>
             </AnimatePresence>

@@ -14,7 +14,7 @@ const Container = React.forwardRef<HTMLDivElement, ContainerProps>(
         {...props}
       />
     );
-  }
+  },
 );
 Container.displayName = "Container";
 

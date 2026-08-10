@@ -16,7 +16,7 @@ const FeatureCard = React.forwardRef<HTMLDivElement, FeatureCardProps>(
         ref={ref}
         className={cn(
           "group relative overflow-hidden premium-shadow transition-all hover:-translate-y-1",
-          className
+          className,
         )}
         {...props}
       >
@@ -30,7 +30,7 @@ const FeatureCard = React.forwardRef<HTMLDivElement, FeatureCardProps>(
         {children && <CardContent>{children}</CardContent>}
       </Card>
     );
-  }
+  },
 );
 FeatureCard.displayName = "FeatureCard";
 

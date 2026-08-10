@@ -5,13 +5,10 @@ const GlassCard = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivE
   ({ className, ...props }, ref) => (
     <div
       ref={ref}
-      className={cn(
-        "rounded-xl glass text-card-foreground p-6",
-        className
-      )}
+      className={cn("rounded-xl glass text-card-foreground p-6", className)}
       {...props}
     />
-  )
+  ),
 );
 GlassCard.displayName = "GlassCard";
 

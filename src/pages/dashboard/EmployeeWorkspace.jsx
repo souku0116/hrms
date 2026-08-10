@@ -1,0 +1,75 @@
+import React from "react";
+import { useAuth } from "@/context/AuthContext";
+import { Users } from "lucide-react";
+
+export default function UserDashboard() {
+  const { profile } = useAuth();
+
+  return (
+    <div className="min-h-screen bg-background">
+      <main className="p-6 md:p-8">
+        <div className="max-w-7xl mx-auto">
+          <div className="space-y-8">
+            {/* Header */}
+            <div>
+              <h1 className="text-4xl font-bold text-textPrimary">Employee Dashboard</h1>
+              <p className="text-textSecondary mt-2">
+                Welcome, {profile?.first_name} {profile?.last_name}
+              </p>
+            </div>
+
+            {/* Placeholder content */}
+            <div className="grid gap-6 md:grid-cols-3">
+              <div className="p-8 rounded-lg bg-surface border border-border">
+                <div className="flex items-center gap-4">
+                  <div className="h-12 w-12 rounded-lg bg-primary/10 flex items-center justify-center">
+                    <Users className="h-6 w-6 text-primary" />
+                  </div>
+                  <div>
+                    <p className="text-sm text-textSecondary">Role</p>
+                    <p className="text-2xl font-bold text-textPrimary capitalize">
+                      {profile?.role}
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="p-8 rounded-lg bg-surface border border-border">
+                <div className="flex items-center gap-4">
+                  <div className="h-12 w-12 rounded-lg bg-primary/10 flex items-center justify-center">
+                    <Users className="h-6 w-6 text-primary" />
+                  </div>
+                  <div>
+                    <p className="text-sm text-textSecondary">Status</p>
+                    <p className="text-2xl font-bold text-textPrimary capitalize">
+                      {profile?.status}
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="p-8 rounded-lg bg-surface border border-border">
+                <div className="flex items-center gap-4">
+                  <div className="h-12 w-12 rounded-lg bg-primary/10 flex items-center justify-center">
+                    <Users className="h-6 w-6 text-primary" />
+                  </div>
+                  <div>
+                    <p className="text-sm text-textSecondary">Email</p>
+                    <p className="text-sm font-bold text-textPrimary truncate">{profile?.email}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Placeholder message */}
+            <div className="p-8 rounded-lg bg-surface border border-border text-center">
+              <p className="text-textSecondary">
+                Employee dashboard functionality coming soon. The authentication system is complete.
+              </p>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  );
+}

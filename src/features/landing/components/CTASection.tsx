@@ -35,12 +35,9 @@ export default function CTASection() {
             >
               Ready to transform your HR operations?
             </motion.h2>
-            <motion.p
-              variants={fadeUp}
-              className="mx-auto mt-4 max-w-xl text-lg text-white/80"
-            >
-              Book a demo today and see how WorkSync can automate your entire employee
-              lifecycle in under a week.
+            <motion.p variants={fadeUp} className="mx-auto mt-4 max-w-xl text-lg text-white/80">
+              Book a demo today and see how WorkSync can automate your entire employee lifecycle in
+              under a week.
             </motion.p>
             <motion.div variants={fadeUp} className="mt-8 flex flex-wrap justify-center gap-3">
               <Button

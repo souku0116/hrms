@@ -7,7 +7,10 @@ export default function TrustedCompanies() {
   const items = [...trustedCompanies, ...trustedCompanies];
 
   return (
-    <section aria-label="Trusted by companies" className="border-y border-[var(--ws-colors-border)] bg-[var(--ws-colors-surface)] py-10">
+    <section
+      aria-label="Trusted by companies"
+      className="border-y border-[var(--ws-colors-border)] bg-[var(--ws-colors-surface)] py-10"
+    >
       <div className="mx-auto max-w-7xl px-6">
         <motion.p
           variants={fadeIn}

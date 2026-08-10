@@ -24,15 +24,16 @@ export function AuthLayout() {
       </div>
       <div className="hidden lg:block relative w-1/2 flex-1 bg-dark">
         <div className="absolute inset-0 h-full w-full object-cover bg-gradient-to-br from-primary/80 to-dark/90">
-           {/* Decorative elements or images can go here */}
-           <div className="flex h-full items-center justify-center p-12">
-             <div className="glass-dark rounded-2xl p-10 max-w-lg text-white">
-               <h2 className="text-3xl font-bold font-heading mb-4">Empower Your Global Team</h2>
-               <p className="text-lg text-white/80 text-balance">
-                 The all-in-one platform to hire, pay, and manage your workforce anywhere in the world.
-               </p>
-             </div>
-           </div>
+          {/* Decorative elements or images can go here */}
+          <div className="flex h-full items-center justify-center p-12">
+            <div className="glass-dark rounded-2xl p-10 max-w-lg text-white">
+              <h2 className="text-3xl font-bold font-heading mb-4">Empower Your Global Team</h2>
+              <p className="text-lg text-white/80 text-balance">
+                The all-in-one platform to hire, pay, and manage your workforce anywhere in the
+                world.
+              </p>
+            </div>
+          </div>
         </div>
       </div>
     </div>
