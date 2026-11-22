@@ -14,6 +14,8 @@ export default function Unauthorized() {
       navigate(ROUTES.SUPERADMIN);
     } else if (role === "admin") {
       navigate(ROUTES.ADMIN);
+    } else if (role === "recruiter") {
+      navigate(ROUTES.REQUISITIONS);
     } else {
       navigate(ROUTES.DASHBOARD);
     }

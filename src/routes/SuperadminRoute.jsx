@@ -4,7 +4,7 @@ import { ROUTES } from "./routeConstants";
 
 export default function SuperadminRoute() {
   const location = useLocation();
-  const { isAuthenticated, role, loading } = useAuth();
+  const { isAuthenticated, role, profile, loading } = useAuth();
 
   if (loading) {
     return (
@@ -17,6 +17,12 @@ export default function SuperadminRoute() {
   if (!isAuthenticated) {
     return <Navigate replace state={{ from: location }} to={ROUTES.LOGIN} />;
   }
+
+  if (!profile) return <Navigate replace to={ROUTES.LOGIN_ERROR} />;
+  if (["inactive", "suspended"].includes(String(profile.status).toLowerCase())) {
+    return <Navigate replace to={ROUTES.ACCOUNT_DISABLED} />;
+  }
+  if (profile.membership_status && profile.membership_status !== "active") return <Navigate replace to={ROUTES.ACCOUNT_DISABLED} />;
 
   if (role !== "superadmin") {
     return <Navigate replace to={ROUTES.UNAUTHORIZED} />;

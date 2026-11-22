@@ -7,9 +7,10 @@ import DashboardLayout from "@/layouts/DashboardLayout";
 import SuperadminLayout from "@/layouts/SuperadminLayout";
 import LayoutRoute from "./LayoutRoute";
 import PrivateRoute from "./PrivateRoute";
-import PublicRoute from "./PublicRoute";
 import SuperadminRoute from "./SuperadminRoute";
 import AdminRoute from "./AdminRoute";
+import RecruiterRoute from "./RecruiterRoute";
+import OrganizationLayout from "@/layouts/OrganizationLayout";
 import { ROUTES } from "./routeConstants";
 
 const Home = lazy(() => import("@/pages/Landing"));
@@ -37,6 +38,14 @@ const OrganizationDetail = lazy(() => import("@/pages/superadmin/OrganizationDet
 const SuperadminUsers = lazy(() => import("@/pages/superadmin/Users"));
 const AuditLogs = lazy(() => import("@/pages/superadmin/AuditLogs"));
 const SuperadminSettings = lazy(() => import("@/pages/superadmin/Settings"));
+const SuperadminProfile = lazy(() => import("@/pages/superadmin/Profile"));
+const SuperadminHelp = lazy(() => import("@/pages/superadmin/Help"));
+const OrganizationSetup = lazy(() => import("@/pages/admin/OrganizationSetup"));
+const OrganizationMembers = lazy(() => import("@/pages/admin/Members"));
+const Requisitions = lazy(() => import("@/pages/recruiter/Requisitions"));
+const RequisitionForm = lazy(() => import("@/pages/recruiter/RequisitionForm"));
+const RequisitionDetail = lazy(() => import("@/pages/recruiter/RequisitionDetail"));
+const ResumePool = lazy(() => import("@/pages/recruiter/ResumePool"));
 
 export default function AppRoutes() {
   return (
@@ -47,12 +56,13 @@ export default function AppRoutes() {
         </Route>
 
         {/* Public Auth Routes */}
-        <Route element={<PublicRoute />}>
-          <Route element={<LayoutRoute layout={AuthLayout} />}>
-            <Route path={ROUTES.LOGIN} element={<Login />} />
-            <Route path={ROUTES.SIGNUP} element={<Signup />} />
-            <Route path={ROUTES.FORGOT_PASSWORD} element={<ForgotPassword />} />
-          </Route>
+        <Route element={<LayoutRoute layout={AuthLayout} />}>
+          <Route path={ROUTES.LOGIN} element={<Login />} />
+          <Route path={ROUTES.SIGNUP} element={<Signup />} />
+        </Route>
+
+        <Route element={<LayoutRoute layout={AuthLayout} />}>
+          <Route path={ROUTES.FORGOT_PASSWORD} element={<ForgotPassword />} />
         </Route>
 
         {/* Auth Error Routes (public, no auth required) */}
@@ -64,7 +74,7 @@ export default function AppRoutes() {
         </Route>
 
         {/* User/Employee Dashboard Routes (protected) */}
-        <Route element={<PrivateRoute />}>
+        <Route element={<PrivateRoute allowedRoles={["user"]} />}>
           <Route element={<LayoutRoute layout={DashboardLayout} />}>
             <Route path={ROUTES.DASHBOARD} element={<Dashboard />} />
             <Route path={ROUTES.JOBS} element={<Jobs />} />
@@ -78,8 +88,22 @@ export default function AppRoutes() {
 
         {/* Admin Routes (role-protected) */}
         <Route element={<AdminRoute />}>
-          <Route element={<LayoutRoute layout={DashboardLayout} />}>
+          <Route element={<LayoutRoute layout={OrganizationLayout} />}>
             <Route path={ROUTES.ADMIN} element={<AdminDashboard />} />
+            <Route path={ROUTES.ADMIN_DEPARTMENTS} element={<OrganizationSetup type="departments" />} />
+            <Route path={ROUTES.ADMIN_LOCATIONS} element={<OrganizationSetup type="locations" />} />
+            <Route path={ROUTES.ADMIN_MEMBERS} element={<OrganizationMembers />} />
+          </Route>
+        </Route>
+
+        <Route element={<RecruiterRoute />}>
+          <Route element={<LayoutRoute layout={OrganizationLayout} />}>
+            <Route path={ROUTES.RECRUITER} element={<Requisitions />} />
+            <Route path={ROUTES.REQUISITIONS} element={<Requisitions />} />
+            <Route path={ROUTES.RESUME_POOL} element={<ResumePool />} />
+            <Route path={ROUTES.REQUISITION_NEW} element={<RequisitionForm />} />
+            <Route path={ROUTES.REQUISITION_EDIT} element={<RequisitionForm />} />
+            <Route path={ROUTES.REQUISITION_DETAIL} element={<RequisitionDetail />} />
           </Route>
         </Route>
 
@@ -92,6 +116,8 @@ export default function AppRoutes() {
             <Route path={ROUTES.SUPERADMIN_USERS} element={<SuperadminUsers />} />
             <Route path={ROUTES.SUPERADMIN_AUDIT_LOGS} element={<AuditLogs />} />
             <Route path={ROUTES.SUPERADMIN_SETTINGS} element={<SuperadminSettings />} />
+            <Route path={ROUTES.SUPERADMIN_PROFILE} element={<SuperadminProfile />} />
+            <Route path={ROUTES.SUPERADMIN_HELP} element={<SuperadminHelp />} />
           </Route>
         </Route>
 

@@ -1,6 +1,6 @@
 # HRMS
 
-This repository is the technical foundation for a future HR Recruitment & Staffing platform. It intentionally contains no product pages, UI components, business workflows, seed data, or module-specific database schema.
+WorkSync Version 1 provides Supabase authentication, organization and membership setup, Recruiter access, requisition submission and approval, a recruiter Resume Pool with candidate details and Google Drive resume links, and starter dashboards for employee, organization admin, and platform superadmin accounts. The rest of the hiring lifecycle is planned for later versions.
 
 ## Stack
 
@@ -14,11 +14,13 @@ This repository is the technical foundation for a future HR Recruitment & Staffi
 ## Getting started
 
 1. Copy `.env.example` to `.env.local` and supply the browser-safe Supabase values.
-2. In Supabase SQL Editor, run `SUPABASE_SETUP.sql`.
+2. In Supabase SQL Editor, run `supabase/migrations/20261123_v1_foundation.sql`, then `supabase/migrations/20261124_candidate_resume_pool.sql`. These create or extend the profile foundation, Version 1 tables, and candidate Resume Pool table with tenant-scoped row-level security.
 3. Install dependencies with `npm install`.
 4. Start the development server with `npm run dev`.
 
-`DATABASE_URL` is server-only. Do not place it in a Vite-prefixed variable or expose it to browser code. Configure it in Vercel for deployments and in a local server environment only when a serverless route needs database access.
+`SUPABASE_SERVICE_ROLE_KEY` is required by the invitation API and must be configured only in Vercel/server environments. Never place it in a `VITE_` variable or browser code. `DATABASE_URL` is server-only and optional until a server route uses `db.js`.
+
+The Vite development server does not run Vercel functions under `/api`. Use `vercel dev` (with the server variables configured locally) to test invitations locally. Normal page development can continue with `npm run dev`.
 
 ## Scripts
 
@@ -36,6 +38,7 @@ This repository is the technical foundation for a future HR Recruitment & Staffi
 ```text
 api/                         Vercel serverless endpoints; privileged work only
   health.js                  Infrastructure health endpoint
+  invite-member.js           Authenticated organization invitation endpoint
 public/                      Static files served as-is
 src/
   assets/                    Local assets grouped by type
@@ -58,6 +61,7 @@ src/
   utils/                     Framework-independent helper functions
 db.js                       Server-only PostgreSQL client
 SUPABASE_SETUP.sql          Generic auth-profile database foundation
+supabase/migrations/        App database migrations (Version 1 foundation)
 vercel.json                 Vercel build and SPA routing configuration
 jsconfig.json               Editor support for the @/ import alias
 ```
@@ -122,6 +126,16 @@ Components use passed data and composition props; keep queries, mutations, route
 
 Vercel uses `npm run build`, deploys `dist/`, serves files under `api/` as serverless functions, and rewrites non-API paths to `index.html` so React Router routes support direct navigation.
 
+### Before deployment
+
+1. Confirm the target Supabase project and take a database backup.
+2. Run `supabase/migrations/20261123_v1_foundation.sql`, then `supabase/migrations/20261124_candidate_resume_pool.sql` in the Supabase SQL Editor. They include profile-role backfill, tenant tables, requisition workflow, and candidate Resume Pool with RLS.
+3. Confirm the existing platform owner has `profiles.role = 'superadmin'`. If not, run the owner-only update shown at the end of the migration with the verified owner email.
+4. In **Authentication → Providers**, enable Email. Set the Supabase Site URL and allow the local and deployed app URLs under **Authentication → URL Configuration → Redirect URLs**.
+5. Configure Vercel Production and Preview with `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY`, and `SUPABASE_SERVICE_ROLE_KEY`. The service-role key must remain server-only. `DATABASE_URL` is not required by Version 1.
+6. In a preview deployment, smoke-test: superadmin creates an organization and invites its admin; admin accepts, creates a department/location, and invites a recruiter; recruiter creates and submits a requisition, adds a candidate with a Drive resume link, and opens that link; admin approves or rejects the requisition; audit history is visible; each role can sign out.
+7. Before production, remove/rotate any credential that was previously committed in `.env.example` if it is valid. The tracked example now contains placeholders only.
+
 ### Deploy to Vercel
 
 1. Push this repository to GitHub and import it in [Vercel](https://vercel.com/new).
@@ -131,8 +145,11 @@ Vercel uses `npm run build`, deploys `dist/`, serves files under `api/` as serve
 3. Before the first deploy finishes, open **Project Settings → Environment Variables** and add:
    - `VITE_SUPABASE_URL` — Supabase project URL
    - `VITE_SUPABASE_ANON_KEY` — Supabase anon/public key
+   - `SUPABASE_SERVICE_ROLE_KEY` — required by the server-only invitation endpoint; never add a `VITE_` prefix
    - `DATABASE_URL` — optional until a serverless route uses `db.js`
 4. Apply those variables to **Production** and **Preview**, then redeploy if the first build failed or the site shows a configuration screen.
-5. In Supabase, add your Vercel domain(s) under **Authentication → URL Configuration → Redirect URLs** so login works in production.
+5. In Supabase, set the production **Site URL** and add your Vercel domain(s) under **Authentication → URL Configuration → Redirect URLs** so invitations and recovery links return to the app.
+
+Before production, run the smoke flow from **Before deployment** in the release checklist: create an organization, accept its admin invitation, configure a department/location, invite a recruiter, submit a requisition, and approve it.
 
 If env vars are missing during a Vercel build, the build still completes and the deployed site shows a configuration screen with setup instructions. Local `npm run dev` fails fast when `.env.local` is missing.

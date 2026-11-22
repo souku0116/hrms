@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useState, useEffect, useRef } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
 import Button from "@/components/ui/Button";
 import Input from "@/components/ui/Input";
@@ -20,16 +20,31 @@ const roleOptions = [
     description: "Manage your organization",
   },
   {
+    id: "recruiter",
+    label: "Recruiter",
+    icon: Users,
+    description: "Manage requisitions and hiring pipelines",
+  },
+  {
     id: "user",
-    label: "User",
+    label: "Employee",
     icon: Users,
     description: "Access your employee workspace",
   },
 ];
 
+const getDashboardPath = (userRole) => ({
+  superadmin: ROUTES.SUPERADMIN,
+  admin: ROUTES.ADMIN,
+  recruiter: ROUTES.REQUISITIONS,
+  user: ROUTES.DASHBOARD,
+})[userRole];
+
 export default function Login() {
   const navigate = useNavigate();
-  const { signIn, isAuthenticated, role, loading } = useAuth();
+  const { signIn, signOut, isAuthenticated, role, loading } = useAuth();
+  const location = useLocation();
+  const loginAttempted = useRef(false);
 
   const [selectedRole, setSelectedRole] = useState(null);
   const [email, setEmail] = useState("");
@@ -41,14 +56,9 @@ export default function Login() {
 
   // Redirect if already authenticated
   useEffect(() => {
-    if (!loading && isAuthenticated) {
-      if (role === "superadmin") {
-        navigate(ROUTES.SUPERADMIN, { replace: true });
-      } else if (role === "admin") {
-        navigate(ROUTES.ADMIN, { replace: true });
-      } else if (role === "user") {
-        navigate(ROUTES.DASHBOARD, { replace: true });
-      }
+    if (!loading && isAuthenticated && !loginAttempted.current) {
+      const path = getDashboardPath(role);
+      if (path) navigate(path, { replace: true });
     }
   }, [isAuthenticated, role, loading, navigate]);
 
@@ -82,42 +92,60 @@ export default function Login() {
     }
 
     setIsSubmitting(true);
+    loginAttempted.current = true;
 
     try {
       const result = await signIn(email, password);
 
       if (result.error) {
-        // Authentication failed
-        navigate(ROUTES.LOGIN_ERROR, { replace: true });
+        await signOut();
+        setApiError(result.error.message || "Unable to sign in. Please check your details and try again.");
         return;
       }
 
       if (!result.profile) {
-        // Profile not found
-        navigate(ROUTES.LOGIN_ERROR, { replace: true });
+        await signOut();
+        setApiError("Your account profile could not be loaded. Please contact your administrator.");
         return;
       }
 
       // Check account status
-      if (result.profile.status === "inactive" || result.profile.status === "suspended") {
+      if (["inactive", "suspended"].includes(String(result.profile.status).toLowerCase())) {
+        await signOut();
+        navigate(ROUTES.ACCOUNT_DISABLED, { replace: true });
+        return;
+      }
+      if (result.profile.membership_status && result.profile.membership_status !== "active") {
+        await signOut();
         navigate(ROUTES.ACCOUNT_DISABLED, { replace: true });
         return;
       }
 
       // Validate role match
       if (selectedRole !== result.profile.role) {
+        await signOut();
         navigate(ROUTES.WRONG_ROLE, { replace: true });
         return;
       }
 
       // All checks passed - redirect to appropriate dashboard
-      if (result.profile.role === "superadmin") {
-        navigate(ROUTES.SUPERADMIN, { replace: true });
-      } else if (result.profile.role === "admin") {
-        navigate(ROUTES.ADMIN, { replace: true });
-      } else if (result.profile.role === "user") {
-        navigate(ROUTES.DASHBOARD, { replace: true });
+      const dashboardPath = getDashboardPath(result.profile.role);
+      if (!dashboardPath) {
+        await signOut();
+        navigate(ROUTES.UNAUTHORIZED, { replace: true });
+        return;
       }
+      const requestedPath = location.state?.from?.pathname;
+      const requestedPathAllowed = result.profile.role === "user"
+        ? [ROUTES.DASHBOARD, "/jobs", "/companies", ROUTES.PROFILE, ROUTES.SETTINGS].some(
+            (path) => requestedPath === path || requestedPath?.startsWith(`${path}/`),
+          )
+        : result.profile.role === "admin"
+          ? requestedPath === ROUTES.ADMIN
+          : result.profile.role === "recruiter"
+            ? requestedPath?.startsWith("/recruiter")
+          : requestedPath?.startsWith("/superadmin");
+      navigate(requestedPathAllowed ? requestedPath : dashboardPath, { replace: true });
     } catch (err) {
       // eslint-disable-next-line no-console
       console.error("Login error:", err);
@@ -313,13 +341,13 @@ export default function Login() {
 
             {/* Forgot Password Link */}
             <div className="text-center pt-2">
-              <a
-                href={ROUTES.FORGOT_PASSWORD}
-                className="text-sm text-primary hover:text-primary/80 transition-colors"
-              >
+              <Link to={ROUTES.FORGOT_PASSWORD} className="text-sm text-primary hover:text-primary/80 transition-colors">
                 Forgot password?
-              </a>
+              </Link>
             </div>
+            <p className="text-center text-sm text-textSecondary">
+              Need an account? <Link className="text-primary hover:underline" to={ROUTES.SIGNUP}>Create one</Link>
+            </p>
           </form>
         </div>
       </div>

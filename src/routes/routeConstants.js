@@ -17,6 +17,16 @@ export const ROUTES = {
   SETTINGS: "/settings",
   // Admin routes
   ADMIN: "/admin",
+  ADMIN_DEPARTMENTS: "/admin/departments",
+  ADMIN_LOCATIONS: "/admin/locations",
+  ADMIN_MEMBERS: "/admin/members",
+  // Recruiter routes
+  RECRUITER: "/recruiter",
+  REQUISITIONS: "/recruiter/requisitions",
+  RESUME_POOL: "/recruiter/resume-pool",
+  REQUISITION_NEW: "/recruiter/requisitions/new",
+  REQUISITION_DETAIL: "/recruiter/requisitions/:id",
+  REQUISITION_EDIT: "/recruiter/requisitions/:id/edit",
   // Superadmin routes
   SUPERADMIN: "/superadmin",
   SUPERADMIN_ORGANIZATIONS: "/superadmin/organizations",
@@ -24,5 +34,7 @@ export const ROUTES = {
   SUPERADMIN_USERS: "/superadmin/users",
   SUPERADMIN_AUDIT_LOGS: "/superadmin/audit-logs",
   SUPERADMIN_SETTINGS: "/superadmin/settings",
+  SUPERADMIN_PROFILE: "/superadmin/profile",
+  SUPERADMIN_HELP: "/superadmin/help",
   NOT_FOUND: "*",
 };

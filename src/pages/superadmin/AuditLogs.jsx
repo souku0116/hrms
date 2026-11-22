@@ -1,113 +1,17 @@
-import React, { useState } from "react";
-import Card from "@/components/ui/Card";
-import { PageHeader, FilterBar } from "@/components/superadmin";
-import { mockAuditLogs } from "@/data/superadminMockData";
+import { useEffect, useState } from "react";
+import supabase from "@/lib/supabaseClient";
+import { PageHeader } from "@/components/superadmin";
 
-/** Audit logs page. */
 export default function AuditLogs() {
-  const [search, setSearch] = useState("");
-  const [actionFilter, setActionFilter] = useState("all");
-
-  const filteredLogs = mockAuditLogs.filter((log) => {
-    const matchesSearch =
-      log.action.toLowerCase().includes(search.toLowerCase()) ||
-      log.actor.toLowerCase().includes(search.toLowerCase()) ||
-      log.organization.toLowerCase().includes(search.toLowerCase());
-    const matchesAction = actionFilter === "all" || log.action === actionFilter;
-    return matchesSearch && matchesAction;
-  });
-
-  const uniqueActions = [...new Set(mockAuditLogs.map((log) => log.action))];
-
-  return (
-    <div className="min-h-screen bg-background">
-      {/* Page header */}
-      <PageHeader title="Audit Logs" subtitle="Track important activity across WorkSync." />
-
-      {/* Content area */}
-      <main className="p-6 md:p-8">
-        <div className="max-w-7xl mx-auto space-y-6">
-          {/* Filter bar */}
-          <FilterBar
-            searchPlaceholder="Search audit logs..."
-            onSearch={setSearch}
-            showAddButton={false}
-          />
-
-          {/* Action filter */}
-          <div>
-            <p className="text-xs font-semibold text-textSecondary uppercase mb-2">Action</p>
-            <div className="flex flex-wrap gap-2">
-              <button
-                onClick={() => setActionFilter("all")}
-                className={`px-3 py-1 rounded-full text-sm font-medium transition-colors ${
-                  actionFilter === "all"
-                    ? "bg-primary text-background"
-                    : "bg-surface text-textSecondary hover:bg-border"
-                }`}
-              >
-                All
-              </button>
-              {uniqueActions.map((action) => (
-                <button
-                  key={action}
-                  onClick={() => setActionFilter(action)}
-                  className={`px-3 py-1 rounded-full text-sm font-medium transition-colors ${
-                    actionFilter === action
-                      ? "bg-primary text-background"
-                      : "bg-surface text-textSecondary hover:bg-border"
-                  }`}
-                >
-                  {action.replace(/_/g, " ")}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* Log entries */}
-          <div className="space-y-3">
-            {filteredLogs.length === 0 ? (
-              <Card>
-                <div className="flex items-center justify-center py-12">
-                  <p className="text-textSecondary">No audit logs found.</p>
-                </div>
-              </Card>
-            ) : (
-              filteredLogs.map((log) => (
-                <Card key={log.id} className="hover:shadow-md transition-shadow">
-                  <div className="p-6">
-                    <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
-                      <div className="flex-1">
-                        <div className="flex items-center gap-2 mb-2">
-                          <span className="inline-flex px-2 py-1 rounded-full text-xs font-semibold bg-primary/10 text-primary">
-                            {log.action.replace(/_/g, " ")}
-                          </span>
-                        </div>
-                        <p className="text-sm font-medium text-textPrimary mb-2">{log.entity}</p>
-                        <p className="text-sm text-textSecondary mb-3">{log.details}</p>
-                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-xs">
-                          <div>
-                            <p className="font-semibold text-textSecondary">Actor</p>
-                            <p className="text-textPrimary mt-1">{log.actor}</p>
-                          </div>
-                          <div>
-                            <p className="font-semibold text-textSecondary">Organization</p>
-                            <p className="text-textPrimary mt-1">{log.organization}</p>
-                          </div>
-                          <div>
-                            <p className="font-semibold text-textSecondary">Timestamp</p>
-                            <p className="text-textPrimary mt-1">{log.timestamp}</p>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </Card>
-              ))
-            )}
-          </div>
-        </div>
-      </main>
-    </div>
-  );
+  const [events, setEvents] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+  useEffect(() => {
+    supabase.from("audit_events").select("id,action,entity_type,entity_id,details,created_at,profiles(first_name,last_name,email),organizations(name)").order("created_at", { ascending: false }).limit(100)
+      .then(({ data, error: queryError }) => { setEvents(data || []); setError(queryError?.message || ""); setLoading(false); });
+  }, []);
+  return <div><PageHeader title="Audit logs" subtitle="Recent organization, membership, and requisition changes." /><main className="mx-auto max-w-7xl p-6 md:p-8">
+    {error && <p className="mb-4 text-sm text-error" role="alert">{error}</p>}
+    <div className="overflow-x-auto rounded-xl border border-border bg-background"><table className="w-full text-left text-sm"><thead className="bg-surface"><tr><th className="p-4">When</th><th className="p-4">Actor</th><th className="p-4">Organization</th><th className="p-4">Action</th><th className="p-4">Record</th><th className="p-4">Details</th></tr></thead><tbody className="divide-y divide-border">{loading ? <tr><td className="p-5" colSpan="6">Loading audit events…</td></tr> : events.length === 0 ? <tr><td className="p-5 text-textSecondary" colSpan="6">No audit events recorded yet.</td></tr> : events.map((event) => <tr key={event.id}><td className="whitespace-nowrap p-4">{new Date(event.created_at).toLocaleString()}</td><td className="p-4">{[event.profiles?.first_name, event.profiles?.last_name].filter(Boolean).join(" ") || event.profiles?.email || "System"}</td><td className="p-4">{event.organizations?.name || "Platform"}</td><td className="p-4 capitalize">{event.action} · {event.entity_type}</td><td className="max-w-48 truncate p-4 font-mono text-xs">{event.entity_id}</td><td className="p-4 text-textSecondary">{event.details?.old_status ? `${event.details.old_status} → ${event.details.new_status}` : event.details?.new_status || "—"}</td></tr>)}</tbody></table></div>
+  </main></div>;
 }

@@ -1,149 +1,23 @@
-import React, { useState } from "react";
-import Card from "@/components/ui/Card";
-import { PageHeader, FilterBar } from "@/components/superadmin";
-import { StatusBadge, RoleBadge } from "@/components/superadmin/Badges";
-import { mockUsers } from "@/data/superadminMockData";
-import { MoreHorizontal, Eye } from "lucide-react";
+import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import supabase from "@/lib/supabaseClient";
+import { PageHeader } from "@/components/superadmin";
+import { ROUTES } from "@/routes/routeConstants";
 
-/** Users list page. */
 export default function Users() {
-  const [search, setSearch] = useState("");
-  const [roleFilter, setRoleFilter] = useState("all");
-  const [statusFilter, setStatusFilter] = useState("all");
-
-  const filteredUsers = mockUsers.filter((user) => {
-    const matchesSearch =
-      user.name.toLowerCase().includes(search.toLowerCase()) ||
-      user.email.toLowerCase().includes(search.toLowerCase());
-    const matchesRole = roleFilter === "all" || user.role === roleFilter;
-    const matchesStatus = statusFilter === "all" || user.status === statusFilter;
-    return matchesSearch && matchesRole && matchesStatus;
-  });
-
-  return (
-    <div className="min-h-screen bg-background">
-      {/* Page header */}
-      <PageHeader title="Users" subtitle="Manage users across all WorkSync organizations." />
-
-      {/* Content area */}
-      <main className="p-6 md:p-8">
-        <div className="max-w-7xl mx-auto space-y-6">
-          {/* Filter bar */}
-          <FilterBar
-            searchPlaceholder="Search users..."
-            onSearch={setSearch}
-            showAddButton={false}
-          />
-
-          {/* Filters */}
-          <div className="flex flex-col gap-4 md:flex-row md:gap-6">
-            <div>
-              <p className="text-xs font-semibold text-textSecondary uppercase mb-2">Role</p>
-              <div className="flex flex-wrap gap-2">
-                {["all", "SUPERADMIN", "ADMIN", "USER"].map((role) => (
-                  <button
-                    key={role}
-                    onClick={() => setRoleFilter(role)}
-                    className={`px-3 py-1 rounded-full text-sm font-medium transition-colors ${
-                      roleFilter === role
-                        ? "bg-primary text-background"
-                        : "bg-surface text-textSecondary hover:bg-border"
-                    }`}
-                  >
-                    {role === "all" ? "All" : role}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            <div>
-              <p className="text-xs font-semibold text-textSecondary uppercase mb-2">Status</p>
-              <div className="flex flex-wrap gap-2">
-                {["all", "Active", "Suspended"].map((status) => (
-                  <button
-                    key={status}
-                    onClick={() => setStatusFilter(status)}
-                    className={`px-3 py-1 rounded-full text-sm font-medium transition-colors ${
-                      statusFilter === status
-                        ? "bg-primary text-background"
-                        : "bg-surface text-textSecondary hover:bg-border"
-                    }`}
-                  >
-                    {status === "all" ? "All" : status}
-                  </button>
-                ))}
-              </div>
-            </div>
-          </div>
-
-          {/* Table */}
-          <Card>
-            <div className="overflow-x-auto">
-              <table className="w-full text-sm">
-                <thead>
-                  <tr className="border-b bg-surface">
-                    <th className="px-6 py-3 text-left font-semibold text-textSecondary text-xs uppercase tracking-wider">
-                      Name
-                    </th>
-                    <th className="px-6 py-3 text-left font-semibold text-textSecondary text-xs uppercase tracking-wider">
-                      Email
-                    </th>
-                    <th className="px-6 py-3 text-left font-semibold text-textSecondary text-xs uppercase tracking-wider">
-                      Organization
-                    </th>
-                    <th className="px-6 py-3 text-left font-semibold text-textSecondary text-xs uppercase tracking-wider">
-                      Role
-                    </th>
-                    <th className="px-6 py-3 text-left font-semibold text-textSecondary text-xs uppercase tracking-wider">
-                      Status
-                    </th>
-                    <th className="px-6 py-3 text-left font-semibold text-textSecondary text-xs uppercase tracking-wider">
-                      Last Active
-                    </th>
-                    <th className="px-6 py-3 text-center font-semibold text-textSecondary text-xs uppercase tracking-wider">
-                      Actions
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y">
-                  {filteredUsers.length === 0 ? (
-                    <tr>
-                      <td colSpan="7" className="px-6 py-12 text-center">
-                        <p className="text-textSecondary">No users found.</p>
-                      </td>
-                    </tr>
-                  ) : (
-                    filteredUsers.map((user) => (
-                      <tr key={user.id} className="hover:bg-surface transition-colors">
-                        <td className="px-6 py-4 font-medium text-textPrimary">{user.name}</td>
-                        <td className="px-6 py-4 text-textSecondary">{user.email}</td>
-                        <td className="px-6 py-4 text-textSecondary">{user.organization}</td>
-                        <td className="px-6 py-4">
-                          <RoleBadge role={user.role} />
-                        </td>
-                        <td className="px-6 py-4">
-                          <StatusBadge status={user.status} />
-                        </td>
-                        <td className="px-6 py-4 text-textSecondary text-xs">{user.lastActive}</td>
-                        <td className="px-6 py-4 text-center">
-                          <div className="flex items-center justify-center gap-2">
-                            <button className="p-1 hover:bg-surface rounded-md transition-colors">
-                              <Eye className="h-4 w-4 text-textSecondary" />
-                            </button>
-                            <button className="p-1 hover:bg-surface rounded-md transition-colors">
-                              <MoreHorizontal className="h-4 w-4 text-textSecondary" />
-                            </button>
-                          </div>
-                        </td>
-                      </tr>
-                    ))
-                  )}
-                </tbody>
-              </table>
-            </div>
-          </Card>
-        </div>
-      </main>
-    </div>
-  );
+  const [members, setMembers] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+  useEffect(() => {
+    supabase.from("organization_memberships").select("id,organization_id,role,status,created_at,profiles(first_name,last_name,email),organizations(name)").order("created_at", { ascending: false })
+      .then(({ data, error: queryError }) => { setMembers(data || []); setError(queryError?.message || ""); setLoading(false); });
+  }, []);
+  async function toggle(member) {
+    const { error: updateError } = await supabase.from("organization_memberships").update({ status: member.status === "active" ? "suspended" : "active" }).eq("id", member.id);
+    if (updateError) setError(updateError.message);
+    else setMembers((current) => current.map((row) => row.id === member.id ? { ...row, status: member.status === "active" ? "suspended" : "active" } : row));
+  }
+  return <div><PageHeader title="Organization users" subtitle="Memberships and roles across WorkSync organizations." actions={<Link className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-background" to={ROUTES.SUPERADMIN_ORGANIZATIONS}>Manage organizations</Link>} />
+    <main className="mx-auto max-w-7xl space-y-4 p-6 md:p-8">{error && <p role="alert" className="text-sm text-error">{error}</p>}<div className="overflow-x-auto rounded-xl border border-border bg-background"><table className="w-full text-left text-sm"><thead className="bg-surface"><tr><th className="p-4">Name</th><th className="p-4">Email</th><th className="p-4">Organization</th><th className="p-4">Role</th><th className="p-4">Status</th><th className="p-4">Action</th></tr></thead><tbody className="divide-y divide-border">{loading ? <tr><td className="p-5" colSpan="6">Loading users…</td></tr> : members.length === 0 ? <tr><td className="p-5 text-textSecondary" colSpan="6">No organization memberships found.</td></tr> : members.map((member) => <tr key={member.id}><td className="p-4">{[member.profiles?.first_name, member.profiles?.last_name].filter(Boolean).join(" ") || "—"}</td><td className="p-4">{member.profiles?.email || "—"}</td><td className="p-4"><Link className="text-primary hover:underline" to={ROUTES.SUPERADMIN_ORGANIZATION_DETAIL.replace(":id", member.organization_id)}>{member.organizations?.name || "Organization"}</Link></td><td className="p-4 capitalize">{member.role.replaceAll("_", " ")}</td><td className="p-4 capitalize">{member.status}</td><td className="p-4"><button className="text-primary hover:underline" onClick={() => toggle(member)}>{member.status === "active" ? "Suspend" : "Activate"}</button></td></tr>)}</tbody></table></div></main>
+  </div>;
 }
