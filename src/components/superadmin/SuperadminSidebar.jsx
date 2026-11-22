@@ -12,11 +12,13 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { ROUTES } from "@/routes/routeConstants";
+import { useAuth } from "@/context/AuthContext";
 
 /** Superadmin sidebar navigation component. */
 export function SuperadminSidebar({ isOpen, onClose }) {
   const location = useLocation();
   const navigate = useNavigate();
+  const { signOut } = useAuth();
 
   const navItems = [
     {
@@ -50,7 +52,7 @@ export function SuperadminSidebar({ isOpen, onClose }) {
 
   const handleNavClick = (path) => {
     navigate(path);
-    onClose();
+    onClose?.();
   };
 
   return (
@@ -105,15 +107,15 @@ export function SuperadminSidebar({ isOpen, onClose }) {
 
       {/* Footer */}
       <div className="border-t p-3 space-y-2">
-        <button className="w-full flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium text-textSecondary hover:bg-surface hover:text-textPrimary transition-colors">
+        <button onClick={() => handleNavClick(ROUTES.SUPERADMIN_HELP)} className="w-full flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium text-textSecondary hover:bg-surface hover:text-textPrimary transition-colors">
           <HelpCircle className="h-5 w-5 flex-shrink-0" />
           <span>Help</span>
         </button>
-        <button className="w-full flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium text-textSecondary hover:bg-surface hover:text-textPrimary transition-colors">
+        <button onClick={() => handleNavClick(ROUTES.SUPERADMIN_PROFILE)} className="w-full flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium text-textSecondary hover:bg-surface hover:text-textPrimary transition-colors">
           <Users className="h-5 w-5 flex-shrink-0" />
           <span>Profile</span>
         </button>
-        <button className="w-full flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium text-error hover:bg-error/10 transition-colors">
+        <button onClick={async () => { await signOut(); navigate(ROUTES.LOGIN, { replace: true }); }} className="w-full flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium text-error hover:bg-error/10 transition-colors">
           <LogOut className="h-5 w-5 flex-shrink-0" />
           <span>Logout</span>
         </button>

@@ -1,261 +1,61 @@
-import React from "react";
-import { useNavigate } from "react-router-dom";
-import Card from "@/components/ui/Card";
-import { StatusBadge } from "@/components/superadmin/Badges";
-import { mockOrganizationDetail } from "@/data/superadminMockData";
+import { useCallback, useEffect, useState } from "react";
+import { Link, useParams } from "react-router-dom";
+import supabase from "@/lib/supabaseClient";
+import { PageHeader } from "@/components/superadmin";
+import Button from "@/components/ui/Button";
 import { ROUTES } from "@/routes/routeConstants";
-import { ChevronLeft, Mail, Globe } from "lucide-react";
+import { useAuth } from "@/context/AuthContext";
+import Input from "@/components/ui/Input";
 
-/** Organization detail page. */
 export default function OrganizationDetail() {
-  const navigate = useNavigate();
-  const [activeTab, setActiveTab] = React.useState("overview");
-
-  // For now, using mock data - in production would fetch based on :id
-  const org = mockOrganizationDetail;
-
-  const tabs = [
-    { id: "overview", label: "Overview" },
-    { id: "users", label: "Users" },
-    { id: "admins", label: "Admins" },
-    { id: "activity", label: "Activity" },
-  ];
-
-  return (
-    <div className="min-h-screen bg-background">
-      {/* Header with back button */}
-      <div className="border-b bg-surface px-6 py-6 md:py-8">
-        <div className="max-w-7xl mx-auto">
-          <button
-            onClick={() => navigate(ROUTES.SUPERADMIN_ORGANIZATIONS)}
-            className="flex items-center gap-2 mb-4 text-primary hover:text-primary/80 transition-colors"
-          >
-            <ChevronLeft className="h-4 w-4" />
-            Back to Organizations
-          </button>
-          <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
-            <div className="flex items-start gap-4">
-              <img src={org.logo} alt={org.name} className="h-16 w-16 rounded-lg" />
-              <div>
-                <h1 className="text-3xl font-bold text-textPrimary">{org.name}</h1>
-                <p className="text-sm text-textSecondary mt-1">Created on {org.created}</p>
-              </div>
-            </div>
-            <StatusBadge status={org.status} />
-          </div>
-        </div>
-      </div>
-
-      {/* Content */}
-      <main className="p-6 md:p-8">
-        <div className="max-w-7xl mx-auto">
-          {/* Tabs */}
-          <div className="flex gap-2 border-b mb-6 overflow-x-auto">
-            {tabs.map((tab) => (
-              <button
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
-                className={`px-4 py-2 font-medium text-sm border-b-2 transition-colors whitespace-nowrap ${
-                  activeTab === tab.id
-                    ? "border-primary text-primary"
-                    : "border-transparent text-textSecondary hover:text-textPrimary"
-                }`}
-              >
-                {tab.label}
-              </button>
-            ))}
-          </div>
-
-          {/* Overview Tab */}
-          {activeTab === "overview" && (
-            <div className="grid gap-6">
-              {/* Organization Info */}
-              <Card>
-                <div className="flex flex-col space-y-1.5 p-6 pb-2">
-                  <h3 className="font-semibold leading-none tracking-tight">
-                    Organization Information
-                  </h3>
-                </div>
-                <div className="p-6 pt-0 space-y-4">
-                  <div className="grid md:grid-cols-2 gap-6">
-                    <div>
-                      <p className="text-xs font-semibold text-textSecondary uppercase">
-                        Admin Name
-                      </p>
-                      <p className="text-sm text-textPrimary mt-1">{org.adminName}</p>
-                    </div>
-                    <div>
-                      <p className="text-xs font-semibold text-textSecondary uppercase">
-                        Admin Email
-                      </p>
-                      <p className="text-sm text-textPrimary mt-1 flex items-center gap-2">
-                        <Mail className="h-4 w-4" />
-                        {org.adminEmail}
-                      </p>
-                    </div>
-                    <div>
-                      <p className="text-xs font-semibold text-textSecondary uppercase">Website</p>
-                      <p className="text-sm text-textPrimary mt-1 flex items-center gap-2">
-                        <Globe className="h-4 w-4" />
-                        {org.website}
-                      </p>
-                    </div>
-                    <div>
-                      <p className="text-xs font-semibold text-textSecondary uppercase">Status</p>
-                      <div className="mt-1">
-                        <StatusBadge status={org.status} />
-                      </div>
-                    </div>
-                  </div>
-                  <div>
-                    <p className="text-xs font-semibold text-textSecondary uppercase">
-                      Description
-                    </p>
-                    <p className="text-sm text-textPrimary mt-1">{org.description}</p>
-                  </div>
-                </div>
-              </Card>
-
-              {/* Statistics */}
-              <div className="grid gap-6 md:grid-cols-3">
-                <Card>
-                  <div className="flex flex-col space-y-1.5 p-6 pb-2">
-                    <h3 className="text-sm font-medium text-textSecondary">Total Users</h3>
-                  </div>
-                  <div className="p-6 pt-0">
-                    <p className="text-2xl font-bold text-textPrimary">{org.usersCount}</p>
-                    <p className="text-xs text-textSecondary mt-1">
-                      {org.monthlyActiveUsers} active this month
-                    </p>
-                  </div>
-                </Card>
-
-                <Card>
-                  <div className="flex flex-col space-y-1.5 p-6 pb-2">
-                    <h3 className="text-sm font-medium text-textSecondary">Administrators</h3>
-                  </div>
-                  <div className="p-6 pt-0">
-                    <p className="text-2xl font-bold text-textPrimary">{org.adminsCount}</p>
-                  </div>
-                </Card>
-
-                <Card>
-                  <div className="flex flex-col space-y-1.5 p-6 pb-2">
-                    <h3 className="text-sm font-medium text-textSecondary">Platform Usage</h3>
-                  </div>
-                  <div className="p-6 pt-0">
-                    <p className="text-2xl font-bold text-textPrimary">{org.totalJobsPosted}</p>
-                    <p className="text-xs text-textSecondary mt-1">jobs posted</p>
-                  </div>
-                </Card>
-              </div>
-            </div>
-          )}
-
-          {/* Users Tab */}
-          {activeTab === "users" && (
-            <Card>
-              <div className="flex flex-col space-y-1.5 p-6 pb-2">
-                <h3 className="font-semibold leading-none tracking-tight">Users</h3>
-              </div>
-              <div className="p-6 pt-0">
-                <div className="overflow-x-auto">
-                  <table className="w-full text-sm">
-                    <thead>
-                      <tr className="border-b">
-                        <th className="px-4 py-2 text-left font-semibold text-textSecondary">
-                          Name
-                        </th>
-                        <th className="px-4 py-2 text-left font-semibold text-textSecondary">
-                          Email
-                        </th>
-                        <th className="px-4 py-2 text-left font-semibold text-textSecondary">
-                          Status
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {org.tabs.users.map((user) => (
-                        <tr key={user.id} className="border-b hover:bg-surface">
-                          <td className="px-4 py-3 text-textPrimary">{user.name}</td>
-                          <td className="px-4 py-3 text-textSecondary">{user.email}</td>
-                          <td className="px-4 py-3">
-                            <StatusBadge status={user.status} />
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-            </Card>
-          )}
-
-          {/* Admins Tab */}
-          {activeTab === "admins" && (
-            <Card>
-              <div className="flex flex-col space-y-1.5 p-6 pb-2">
-                <h3 className="font-semibold leading-none tracking-tight">Administrators</h3>
-              </div>
-              <div className="p-6 pt-0">
-                <div className="overflow-x-auto">
-                  <table className="w-full text-sm">
-                    <thead>
-                      <tr className="border-b">
-                        <th className="px-4 py-2 text-left font-semibold text-textSecondary">
-                          Name
-                        </th>
-                        <th className="px-4 py-2 text-left font-semibold text-textSecondary">
-                          Email
-                        </th>
-                        <th className="px-4 py-2 text-left font-semibold text-textSecondary">
-                          Status
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {org.tabs.admins.map((admin) => (
-                        <tr key={admin.id} className="border-b hover:bg-surface">
-                          <td className="px-4 py-3 text-textPrimary">{admin.name}</td>
-                          <td className="px-4 py-3 text-textSecondary">{admin.email}</td>
-                          <td className="px-4 py-3">
-                            <StatusBadge status={admin.status} />
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-            </Card>
-          )}
-
-          {/* Activity Tab */}
-          {activeTab === "activity" && (
-            <Card>
-              <div className="flex flex-col space-y-1.5 p-6 pb-2">
-                <h3 className="font-semibold leading-none tracking-tight">Activity Log</h3>
-              </div>
-              <div className="p-6 pt-0">
-                <div className="space-y-4">
-                  {org.tabs.activity.map((activity) => (
-                    <div
-                      key={activity.id}
-                      className="flex items-center justify-between py-3 border-b last:border-0"
-                    >
-                      <div>
-                        <p className="text-sm font-medium text-textPrimary">{activity.action}</p>
-                        <p className="text-xs text-textSecondary">by {activity.actor}</p>
-                      </div>
-                      <p className="text-xs text-muted">{activity.timestamp}</p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </Card>
-          )}
-        </div>
-      </main>
-    </div>
-  );
+  const { id } = useParams();
+  const { user } = useAuth();
+  const [organization, setOrganization] = useState(null);
+  const [members, setMembers] = useState([]);
+  const [counts, setCounts] = useState({ departments: 0, locations: 0, requisitions: 0 });
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+  const [invite, setInvite] = useState({ email: "", firstName: "", lastName: "", role: "admin" });
+  const [inviteMessage, setInviteMessage] = useState("");
+  const [inviting, setInviting] = useState(false);
+  const load = useCallback(async () => {
+    setLoading(true);
+    const [org, team, depts, locations, reqs] = await Promise.all([
+      supabase.from("organizations").select("*").eq("id", id).single(),
+      supabase.from("organization_memberships").select("id,role,status,profiles(first_name,last_name,email)").eq("organization_id", id).order("created_at", { ascending: false }),
+      supabase.from("departments").select("id", { count: "exact", head: true }).eq("organization_id", id),
+      supabase.from("locations").select("id", { count: "exact", head: true }).eq("organization_id", id),
+      supabase.from("requisitions").select("id", { count: "exact", head: true }).eq("organization_id", id),
+    ]);
+    setOrganization(org.data); setMembers(team.data || []);
+    setCounts({ departments: depts.count || 0, locations: locations.count || 0, requisitions: reqs.count || 0 });
+    setError(org.error?.message || team.error?.message || depts.error?.message || locations.error?.message || reqs.error?.message || "");
+    setLoading(false);
+  }, [id]);
+  useEffect(() => { load(); }, [load]);
+  async function toggleStatus() {
+    const { error: updateError } = await supabase.from("organizations").update({ status: organization.status === "active" ? "suspended" : "active" }).eq("id", id);
+    if (updateError) setError(updateError.message); else await load();
+  }
+  async function inviteMember(event) {
+    event.preventDefault(); setInviting(true); setError(""); setInviteMessage("");
+    const { data } = await supabase.auth.getSession();
+    try {
+      const result = await fetch("/api/invite-member", { method: "POST", headers: { "Content-Type": "application/json", Authorization: `Bearer ${data.session?.access_token || ""}` }, body: JSON.stringify({ organizationId: id, ...invite }) });
+      const isJson = result.headers.get("content-type")?.includes("application/json");
+      const payload = isJson ? await result.json() : {};
+      if (!result.ok || !isJson) setError(payload.error || "Invitation failed. Use the API-enabled Vercel local server or deployment.");
+      else { setInviteMessage(payload.message || "Invitation sent."); setInvite({ email: "", firstName: "", lastName: "", role: "admin" }); await load(); }
+    } catch { setError("Invitation service could not be reached. Ensure the Vercel API is configured."); }
+    setInviting(false);
+  }
+  if (loading) return <main className="p-8" role="status">Loading organization…</main>;
+  if (!organization) return <main className="p-8"><p role="alert">{error || "Organization not found."}</p><Link to={ROUTES.SUPERADMIN_ORGANIZATIONS}>Return to organizations</Link></main>;
+  return <div><PageHeader title={organization.name} subtitle={`Organization · ${organization.slug}`} actions={<Button onClick={toggleStatus} variant="outline">{organization.status === "active" ? "Suspend organization" : "Activate organization"}</Button>} />
+    <main className="mx-auto max-w-7xl space-y-6 p-6 md:p-8">{error && <p role="alert" className="text-sm text-error">{error}</p>}
+      <div className="grid gap-4 sm:grid-cols-3">{Object.entries(counts).map(([label, value]) => <section className="rounded-xl border border-border bg-background p-5" key={label}><p className="text-sm capitalize text-textSecondary">{label}</p><p className="mt-2 text-2xl font-bold">{value}</p></section>)}</div>
+      <section className="overflow-x-auto rounded-xl border border-border bg-background"><h2 className="border-b border-border p-4 font-semibold">Organization team</h2><table className="w-full text-left text-sm"><thead className="bg-surface"><tr><th className="p-4">Name</th><th className="p-4">Email</th><th className="p-4">Role</th><th className="p-4">Status</th></tr></thead><tbody className="divide-y divide-border">{members.length === 0 ? <tr><td className="p-5 text-textSecondary" colSpan="4">No members yet.</td></tr> : members.map((member) => <tr key={member.id}><td className="p-4">{[member.profiles?.first_name, member.profiles?.last_name].filter(Boolean).join(" ") || "—"}</td><td className="p-4">{member.profiles?.email || "—"}</td><td className="p-4 capitalize">{member.role.replaceAll("_", " ")}</td><td className="p-4 capitalize">{member.status}</td></tr>)}</tbody></table></section>
+      <form className="grid gap-4 rounded-xl border border-border bg-background p-5 md:grid-cols-2" onSubmit={inviteMember}><div className="md:col-span-2"><h2 className="font-semibold">Invite organization member</h2><p className="mt-1 text-sm text-textSecondary">Invite an administrator or recruiter. Invitations are sent by Supabase Auth.</p></div><Input label="Email" type="email" required value={invite.email} onChange={(e) => setInvite({ ...invite, email: e.target.value })} /><label className="block text-sm font-medium">Role<select className="mt-1 block w-full rounded-md border border-border bg-background px-3 py-2" value={invite.role} onChange={(e) => setInvite({ ...invite, role: e.target.value })}><option value="admin">Admin</option><option value="recruiter">Recruiter</option></select></label><Input label="First name" required value={invite.firstName} onChange={(e) => setInvite({ ...invite, firstName: e.target.value })} /><Input label="Last name" required value={invite.lastName} onChange={(e) => setInvite({ ...invite, lastName: e.target.value })} />{inviteMessage && <p className="text-sm text-success md:col-span-2" role="status">{inviteMessage}</p>}<div className="md:col-span-2"><Button disabled={inviting || !user}>{inviting ? "Sending…" : "Send invitation"}</Button></div></form>
+    </main>
+  </div>;
 }

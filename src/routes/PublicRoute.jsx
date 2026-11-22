@@ -3,7 +3,7 @@ import { useAuth } from "@/context/AuthContext";
 import { ROUTES } from "./routeConstants";
 
 export default function PublicRoute() {
-  const { isAuthenticated, role, loading } = useAuth();
+  const { isAuthenticated, role, profile, loading } = useAuth();
 
   if (loading) {
     return (
@@ -14,14 +14,19 @@ export default function PublicRoute() {
   }
 
   if (isAuthenticated) {
+    if (!profile) return <Navigate replace to={ROUTES.LOGIN_ERROR} />;
+    if (["inactive", "suspended"].includes(String(profile.status).toLowerCase())) {
+      return <Navigate replace to={ROUTES.ACCOUNT_DISABLED} />;
+    }
     // Redirect authenticated users to their appropriate dashboard
     if (role === "superadmin") {
       return <Navigate replace to={ROUTES.SUPERADMIN} />;
     } else if (role === "admin") {
       return <Navigate replace to={ROUTES.ADMIN} />;
-    } else {
+    } else if (role === "user") {
       return <Navigate replace to={ROUTES.DASHBOARD} />;
     }
+    return <Navigate replace to={ROUTES.UNAUTHORIZED} />;
   }
 
   return <Outlet />;

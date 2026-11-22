@@ -16,9 +16,10 @@ export default function LoginError() {
           </div>
 
           <div className="space-y-2">
-            <h1 className="text-3xl font-bold text-textPrimary">Unable to sign in</h1>
+            <h1 className="text-3xl font-bold text-textPrimary">Account profile unavailable</h1>
             <p className="text-textSecondary">
-              The email or password you entered is incorrect. Please try again.
+              Your sign-in succeeded, but WorkSync could not load your account profile. Please ask
+              your administrator to check the profile setup and try again.
             </p>
           </div>
         </div>
@@ -26,11 +27,6 @@ export default function LoginError() {
         <div className="space-y-3">
           <Link to={ROUTES.LOGIN} className="block">
             <Button className="w-full">Try Again</Button>
-          </Link>
-          <Link to={ROUTES.FORGOT_PASSWORD} className="block">
-            <Button variant="outline" className="w-full">
-              Forgot Password?
-            </Button>
           </Link>
         </div>
       </div>

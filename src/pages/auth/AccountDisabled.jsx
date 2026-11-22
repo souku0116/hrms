@@ -1,10 +1,13 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import Button from "@/components/ui/Button";
 import { ROUTES } from "@/routes/routeConstants";
 import { Lock } from "lucide-react";
+import { useAuth } from "@/context/AuthContext";
 
 export default function AccountDisabled() {
+  const navigate = useNavigate();
+  const { signOut } = useAuth();
   return (
     <div className="min-h-screen flex items-center justify-center p-4 bg-background">
       <div className="w-full max-w-sm space-y-8">
@@ -24,9 +27,7 @@ export default function AccountDisabled() {
           </div>
         </div>
 
-        <Link to={ROUTES.LOGIN} className="block">
-          <Button className="w-full">Back to Login</Button>
-        </Link>
+        <Button className="w-full" onClick={async () => { await signOut(); navigate(ROUTES.LOGIN, { replace: true }); }}>Back to Login</Button>
       </div>
     </div>
   );
