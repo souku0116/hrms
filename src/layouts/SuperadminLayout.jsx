@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Outlet } from "react-router-dom";
+import { Outlet, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
 import { SuperadminSidebar } from "@/components/superadmin/SuperadminSidebar";
 import { SuperadminHeader } from "@/components/superadmin/SuperadminHeader";
@@ -8,6 +8,7 @@ import { pageTransition } from "@/animations/page";
 /** Superadmin application layout shell. */
 export function SuperadminLayout() {
   const [isSidebarOpen, setIsSidebarOpen] = React.useState(false);
+  const { pathname } = useLocation();
 
   return (
     <div className="flex min-h-screen bg-background">
@@ -31,6 +32,7 @@ export function SuperadminLayout() {
         {/* Content area */}
         <main className="flex-1 overflow-auto">
           <motion.div
+            key={pathname}
             initial="initial"
             animate="animate"
             exit="exit"

@@ -14,13 +14,13 @@ WorkSync Version 1 provides Supabase authentication, organization and membership
 ## Getting started
 
 1. Copy `.env.example` to `.env.local` and supply the browser-safe Supabase values.
-2. In Supabase SQL Editor, run `supabase/migrations/20261123_v1_foundation.sql`, then `supabase/migrations/20261124_candidate_resume_pool.sql`. These create or extend the profile foundation, Version 1 tables, and candidate Resume Pool table with tenant-scoped row-level security.
+2. In Supabase SQL Editor, run `supabase/migrations/20261123_v1_foundation.sql`, `supabase/migrations/20261124_candidate_resume_pool.sql`, and `supabase/migrations/20261125_superadmin_user_management.sql`, in that order. These create or extend the profile foundation, Version 1 tables, candidate Resume Pool, and secure superadmin user management.
 3. Install dependencies with `npm install`.
 4. Start the development server with `npm run dev`.
 
-`SUPABASE_SERVICE_ROLE_KEY` is required by the invitation API and must be configured only in Vercel/server environments. Never place it in a `VITE_` variable or browser code. `DATABASE_URL` is server-only and optional until a server route uses `db.js`.
+`SUPABASE_SECRET_KEY` is required by privileged API routes and must be configured only in server environments. `SUPABASE_SERVICE_ROLE_KEY` remains supported for existing projects. Never place either key in a `VITE_` variable or browser code. `DATABASE_URL` is server-only and optional until a server route uses `db.js`.
 
-The Vite development server does not run Vercel functions under `/api`. Use `vercel dev` (with the server variables configured locally) to test invitations locally. Normal page development can continue with `npm run dev`.
+The Vite development server now runs handlers under `/api` through a local-only middleware. Configure `SUPABASE_SECRET_KEY` (or the legacy `SUPABASE_SERVICE_ROLE_KEY`) in `.env.local` to test invitations and superadmin user management locally. Keep this key server-only; the Vite client exposes only `VITE_` variables.
 
 ## Scripts
 
@@ -129,10 +129,10 @@ Vercel uses `npm run build`, deploys `dist/`, serves files under `api/` as serve
 ### Before deployment
 
 1. Confirm the target Supabase project and take a database backup.
-2. Run `supabase/migrations/20261123_v1_foundation.sql`, then `supabase/migrations/20261124_candidate_resume_pool.sql` in the Supabase SQL Editor. They include profile-role backfill, tenant tables, requisition workflow, and candidate Resume Pool with RLS.
+2. Run `supabase/migrations/20261123_v1_foundation.sql`, `supabase/migrations/20261124_candidate_resume_pool.sql`, and `supabase/migrations/20261125_superadmin_user_management.sql` in that order in the Supabase SQL Editor. They include profile-role backfill, tenant tables, requisition workflow, candidate Resume Pool with RLS, and the atomic user-management function.
 3. Confirm the existing platform owner has `profiles.role = 'superadmin'`. If not, run the owner-only update shown at the end of the migration with the verified owner email.
 4. In **Authentication → Providers**, enable Email. Set the Supabase Site URL and allow the local and deployed app URLs under **Authentication → URL Configuration → Redirect URLs**.
-5. Configure Vercel Production and Preview with `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY`, and `SUPABASE_SERVICE_ROLE_KEY`. The service-role key must remain server-only. `DATABASE_URL` is not required by Version 1.
+5. Configure Vercel Production and Preview with `VITE_SUPABASE_URL`, a browser-safe `VITE_SUPABASE_PUBLISHABLE_KEY` (or the existing `VITE_SUPABASE_ANON_KEY`), and server-only `SUPABASE_SECRET_KEY` (or the legacy `SUPABASE_SERVICE_ROLE_KEY`). The secret key must remain server-only. `DATABASE_URL` is not required by Version 1.
 6. In a preview deployment, smoke-test: superadmin creates an organization and invites its admin; admin accepts, creates a department/location, and invites a recruiter; recruiter creates and submits a requisition, adds a candidate with a Drive resume link, and opens that link; admin approves or rejects the requisition; audit history is visible; each role can sign out.
 7. Before production, remove/rotate any credential that was previously committed in `.env.example` if it is valid. The tracked example now contains placeholders only.
 
@@ -144,8 +144,8 @@ Vercel uses `npm run build`, deploys `dist/`, serves files under `api/` as serve
    - **Output Directory:** `dist`
 3. Before the first deploy finishes, open **Project Settings → Environment Variables** and add:
    - `VITE_SUPABASE_URL` — Supabase project URL
-   - `VITE_SUPABASE_ANON_KEY` — Supabase anon/public key
-   - `SUPABASE_SERVICE_ROLE_KEY` — required by the server-only invitation endpoint; never add a `VITE_` prefix
+   - `VITE_SUPABASE_PUBLISHABLE_KEY` — Supabase publishable key (existing `VITE_SUPABASE_ANON_KEY` is also supported)
+   - `SUPABASE_SECRET_KEY` — required by privileged server endpoints; never add a `VITE_` prefix (`SUPABASE_SERVICE_ROLE_KEY` is supported for existing projects)
    - `DATABASE_URL` — optional until a serverless route uses `db.js`
 4. Apply those variables to **Production** and **Preview**, then redeploy if the first build failed or the site shows a configuration screen.
 5. In Supabase, set the production **Site URL** and add your Vercel domain(s) under **Authentication → URL Configuration → Redirect URLs** so invitations and recovery links return to the app.

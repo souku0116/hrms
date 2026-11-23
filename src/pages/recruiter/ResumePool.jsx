@@ -27,6 +27,7 @@ export default function ResumePool() {
   const [statusFilter, setStatusFilter] = useState("active");
   const [form, setForm] = useState(emptyForm);
   const [isOpen, setIsOpen] = useState(false);
+  const handleClose = useCallback(() => setIsOpen(false), []);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
@@ -131,7 +132,7 @@ export default function ResumePool() {
           {candidate.notes && <div className="mt-4"><h3 className="text-xs font-semibold uppercase text-textSecondary">Notes</h3><p className="mt-1 whitespace-pre-wrap text-sm text-textSecondary">{candidate.notes}</p></div>}
           <div className="mt-auto flex items-center justify-between gap-3 border-t border-border pt-4 mt-5"><a className="font-medium text-primary hover:underline" href={candidate.resume_drive_url} rel="noopener noreferrer" target="_blank">Open resume in Google Drive ↗</a><button className="text-sm text-textSecondary hover:text-textPrimary" onClick={() => toggleStatus(candidate)}>{candidate.status === "active" ? "Archive" : "Restore"}</button></div>
         </article>)}</section>}
-    <Modal isOpen={isOpen} onClose={() => setIsOpen(false)} title="Add candidate to Resume Pool">
+    <Modal isOpen={isOpen} onClose={handleClose} title="Add candidate to Resume Pool">
       <form className="grid max-h-[75vh] gap-4 overflow-y-auto pr-1 sm:grid-cols-2" onSubmit={saveCandidate}>
         <Input label="First name" required value={form.first_name} onChange={(e) => setForm({ ...form, first_name: e.target.value })} />
         <Input label="Last name" required value={form.last_name} onChange={(e) => setForm({ ...form, last_name: e.target.value })} />

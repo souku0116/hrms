@@ -36,7 +36,7 @@ const roleOptions = [
 const getDashboardPath = (userRole) => ({
   superadmin: ROUTES.SUPERADMIN,
   admin: ROUTES.ADMIN,
-  recruiter: ROUTES.REQUISITIONS,
+  recruiter: ROUTES.RECRUITER,
   user: ROUTES.DASHBOARD,
 })[userRole];
 

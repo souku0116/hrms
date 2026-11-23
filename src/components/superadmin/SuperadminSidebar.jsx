@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
   LayoutDashboard,
   Building2,
@@ -50,11 +50,6 @@ export function SuperadminSidebar({ isOpen, onClose }) {
 
   const isActive = (path) => location.pathname === path || location.pathname.startsWith(path + "/");
 
-  const handleNavClick = (path) => {
-    navigate(path);
-    onClose?.();
-  };
-
   return (
     <aside
       className={cn(
@@ -86,8 +81,9 @@ export function SuperadminSidebar({ isOpen, onClose }) {
               const active = isActive(item.path);
               return (
                 <li key={item.path}>
-                  <button
-                    onClick={() => handleNavClick(item.path)}
+                  <Link
+                    to={item.path}
+                    onClick={onClose}
                     className={cn(
                       "w-full flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors",
                       active
@@ -97,7 +93,7 @@ export function SuperadminSidebar({ isOpen, onClose }) {
                   >
                     <Icon className="h-5 w-5 flex-shrink-0" />
                     <span>{item.label}</span>
-                  </button>
+                  </Link>
                 </li>
               );
             })}
@@ -107,14 +103,14 @@ export function SuperadminSidebar({ isOpen, onClose }) {
 
       {/* Footer */}
       <div className="border-t p-3 space-y-2">
-        <button onClick={() => handleNavClick(ROUTES.SUPERADMIN_HELP)} className="w-full flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium text-textSecondary hover:bg-surface hover:text-textPrimary transition-colors">
+        <Link to={ROUTES.SUPERADMIN_HELP} onClick={onClose} className="w-full flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium text-textSecondary hover:bg-surface hover:text-textPrimary transition-colors">
           <HelpCircle className="h-5 w-5 flex-shrink-0" />
           <span>Help</span>
-        </button>
-        <button onClick={() => handleNavClick(ROUTES.SUPERADMIN_PROFILE)} className="w-full flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium text-textSecondary hover:bg-surface hover:text-textPrimary transition-colors">
+        </Link>
+        <Link to={ROUTES.SUPERADMIN_PROFILE} onClick={onClose} className="w-full flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium text-textSecondary hover:bg-surface hover:text-textPrimary transition-colors">
           <Users className="h-5 w-5 flex-shrink-0" />
           <span>Profile</span>
-        </button>
+        </Link>
         <button onClick={async () => { await signOut(); navigate(ROUTES.LOGIN, { replace: true }); }} className="w-full flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium text-error hover:bg-error/10 transition-colors">
           <LogOut className="h-5 w-5 flex-shrink-0" />
           <span>Logout</span>

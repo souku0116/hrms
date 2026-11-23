@@ -7,27 +7,32 @@ import { focusRing } from "./styles";
 export default function Modal({ children, className, isOpen, onClose, title }) {
   const dialogRef = useRef(null);
   const titleId = useId();
+  const onCloseRef = useRef(onClose);
+  onCloseRef.current = onClose;
 
   useEffect(() => {
     if (!isOpen) {
       return undefined;
     }
 
-    const activeElement = document.activeElement;
+    const previousActiveElement = document.activeElement;
     const handleKeyDown = (event) => {
       if (event.key === "Escape") {
-        onClose?.();
+        onCloseRef.current?.();
       }
     };
 
     document.addEventListener("keydown", handleKeyDown);
-    dialogRef.current?.focus();
+
+    if (!dialogRef.current?.contains(document.activeElement)) {
+      dialogRef.current?.focus();
+    }
 
     return () => {
       document.removeEventListener("keydown", handleKeyDown);
-      activeElement?.focus?.();
+      previousActiveElement?.focus?.();
     };
-  }, [isOpen, onClose]);
+  }, [isOpen]);
 
   if (!isOpen) {
     return null;
