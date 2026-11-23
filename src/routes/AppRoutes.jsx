@@ -43,6 +43,7 @@ const SuperadminHelp = lazy(() => import("@/pages/superadmin/Help"));
 const OrganizationSetup = lazy(() => import("@/pages/admin/OrganizationSetup"));
 const OrganizationMembers = lazy(() => import("@/pages/admin/Members"));
 const Requisitions = lazy(() => import("@/pages/recruiter/Requisitions"));
+const RecruiterDashboard = lazy(() => import("@/pages/recruiter/RecruiterDashboard"));
 const RequisitionForm = lazy(() => import("@/pages/recruiter/RequisitionForm"));
 const RequisitionDetail = lazy(() => import("@/pages/recruiter/RequisitionDetail"));
 const ResumePool = lazy(() => import("@/pages/recruiter/ResumePool"));
@@ -98,7 +99,7 @@ export default function AppRoutes() {
 
         <Route element={<RecruiterRoute />}>
           <Route element={<LayoutRoute layout={OrganizationLayout} />}>
-            <Route path={ROUTES.RECRUITER} element={<Requisitions />} />
+            <Route path={ROUTES.RECRUITER} element={<RecruiterDashboard />} />
             <Route path={ROUTES.REQUISITIONS} element={<Requisitions />} />
             <Route path={ROUTES.RESUME_POOL} element={<ResumePool />} />
             <Route path={ROUTES.REQUISITION_NEW} element={<RequisitionForm />} />
@@ -109,7 +110,7 @@ export default function AppRoutes() {
 
         {/* Superadmin Routes (role-protected) */}
         <Route element={<SuperadminRoute />}>
-          <Route element={<LayoutRoute layout={SuperadminLayout} />}>
+          <Route element={<SuperadminLayout />}>
             <Route path={ROUTES.SUPERADMIN} element={<SuperadminDashboard />} />
             <Route path={ROUTES.SUPERADMIN_ORGANIZATIONS} element={<Organizations />} />
             <Route path={ROUTES.SUPERADMIN_ORGANIZATION_DETAIL} element={<OrganizationDetail />} />
