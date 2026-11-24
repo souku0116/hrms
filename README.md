@@ -1,6 +1,6 @@
 # HRMS
 
-WorkSync Version 1 provides Supabase authentication, organization and membership setup, Recruiter access, requisition submission and approval, a recruiter Resume Pool with candidate details and Google Drive resume links, and starter dashboards for employee, organization admin, and platform superadmin accounts. The rest of the hiring lifecycle is planned for later versions.
+WorkSync Version 1 provides Supabase authentication, organization and membership setup, Recruiter access, requisition submission and approval, a recruiter Resume Pool with private Supabase Storage resumes, Groq-assisted resume detail extraction, side-by-side review, and starter dashboards for employee, organization admin, and platform superadmin accounts. The rest of the hiring lifecycle is planned for later versions.
 
 ## Stack
 
@@ -14,13 +14,13 @@ WorkSync Version 1 provides Supabase authentication, organization and membership
 ## Getting started
 
 1. Copy `.env.example` to `.env.local` and supply the browser-safe Supabase values.
-2. In Supabase SQL Editor, run `supabase/migrations/20261123_v1_foundation.sql`, `supabase/migrations/20261124_candidate_resume_pool.sql`, and `supabase/migrations/20261125_superadmin_user_management.sql`, in that order. These create or extend the profile foundation, Version 1 tables, candidate Resume Pool, and secure superadmin user management.
+2. In Supabase SQL Editor, run migrations `20261123_v1_foundation.sql` through `20261128_resume_ingestion_history.sql` in order. These create the private bucket, candidate storage metadata, AI extraction JSON, and parse history.
 3. Install dependencies with `npm install`.
 4. Start the development server with `npm run dev`.
 
-`SUPABASE_SECRET_KEY` is required by privileged API routes and must be configured only in server environments. `SUPABASE_SERVICE_ROLE_KEY` remains supported for existing projects. Never place either key in a `VITE_` variable or browser code. `DATABASE_URL` is server-only and optional until a server route uses `db.js`.
+`SUPABASE_SECRET_KEY` and `GROQ_API_KEY` are required by privileged API routes and must be configured only in server environments. `SUPABASE_SERVICE_ROLE_KEY` remains supported for existing projects. Never place these keys in a `VITE_` variable or browser code. `GROQ_MODEL` is optional and defaults to `openai/gpt-oss-20b`; `GROQ_VISION_MODEL` defaults to `qwen/qwen3.8-27b` for image resumes and scanned PDF pages. `DATABASE_URL` is server-only and optional until a server route uses `db.js`.
 
-The Vite development server now runs handlers under `/api` through a local-only middleware. Configure `SUPABASE_SECRET_KEY` (or the legacy `SUPABASE_SERVICE_ROLE_KEY`) in `.env.local` to test invitations and superadmin user management locally. Keep this key server-only; the Vite client exposes only `VITE_` variables.
+The Vite development server runs handlers under `/api` through local middleware. Configure `SUPABASE_SECRET_KEY` and `GROQ_API_KEY` in `.env.local` to test resume parsing locally. Keep both server-only; the Vite client exposes only `VITE_` variables.
 
 ## Scripts
 
@@ -129,11 +129,11 @@ Vercel uses `npm run build`, deploys `dist/`, serves files under `api/` as serve
 ### Before deployment
 
 1. Confirm the target Supabase project and take a database backup.
-2. Run `supabase/migrations/20261123_v1_foundation.sql`, `supabase/migrations/20261124_candidate_resume_pool.sql`, and `supabase/migrations/20261125_superadmin_user_management.sql` in that order in the Supabase SQL Editor. They include profile-role backfill, tenant tables, requisition workflow, candidate Resume Pool with RLS, and the atomic user-management function.
+2. Run `supabase/migrations/20261123_v1_foundation.sql` through `supabase/migrations/20261128_resume_ingestion_history.sql` in order in the Supabase SQL Editor. They include profile-role backfill, tenant tables, requisition workflow, private resume Storage, reviewed AI detail storage, and parse history.
 3. Confirm the existing platform owner has `profiles.role = 'superadmin'`. If not, run the owner-only update shown at the end of the migration with the verified owner email.
 4. In **Authentication → Providers**, enable Email. Set the Supabase Site URL and allow the local and deployed app URLs under **Authentication → URL Configuration → Redirect URLs**.
-5. Configure Vercel Production and Preview with `VITE_SUPABASE_URL`, a browser-safe `VITE_SUPABASE_PUBLISHABLE_KEY` (or the existing `VITE_SUPABASE_ANON_KEY`), and server-only `SUPABASE_SECRET_KEY` (or the legacy `SUPABASE_SERVICE_ROLE_KEY`). The secret key must remain server-only. `DATABASE_URL` is not required by Version 1.
-6. In a preview deployment, smoke-test: superadmin creates an organization and invites its admin; admin accepts, creates a department/location, and invites a recruiter; recruiter creates and submits a requisition, adds a candidate with a Drive resume link, and opens that link; admin approves or rejects the requisition; audit history is visible; each role can sign out.
+5. Configure Vercel Production and Preview with `VITE_SUPABASE_URL`, a browser-safe `VITE_SUPABASE_PUBLISHABLE_KEY` (or the existing `VITE_SUPABASE_ANON_KEY`), and server-only `SUPABASE_SECRET_KEY` plus `GROQ_API_KEY`. The secret keys must remain server-only. `DATABASE_URL` is not required by Version 1.
+6. In a preview deployment, smoke-test: superadmin creates an organization and invites its admin; admin accepts, creates a department/location, and invites a recruiter; recruiter creates and submits a requisition, uploads a PDF/DOC/DOCX resume into the Resume Pool, and opens the private resume link; admin approves or rejects the requisition; audit history is visible; each role can sign out.
 7. Before production, remove/rotate any credential that was previously committed in `.env.example` if it is valid. The tracked example now contains placeholders only.
 
 ### Deploy to Vercel
@@ -146,6 +146,9 @@ Vercel uses `npm run build`, deploys `dist/`, serves files under `api/` as serve
    - `VITE_SUPABASE_URL` — Supabase project URL
    - `VITE_SUPABASE_PUBLISHABLE_KEY` — Supabase publishable key (existing `VITE_SUPABASE_ANON_KEY` is also supported)
    - `SUPABASE_SECRET_KEY` — required by privileged server endpoints; never add a `VITE_` prefix (`SUPABASE_SERVICE_ROLE_KEY` is supported for existing projects)
+   - `GROQ_API_KEY` — required for AI-assisted resume extraction; never add a `VITE_` prefix
+   - `GROQ_MODEL` — optional text model override (defaults to `openai/gpt-oss-20b`)
+   - `GROQ_VISION_MODEL` — optional vision model override (defaults to `qwen/qwen3.8-27b`)
    - `DATABASE_URL` — optional until a serverless route uses `db.js`
 4. Apply those variables to **Production** and **Preview**, then redeploy if the first build failed or the site shows a configuration screen.
 5. In Supabase, set the production **Site URL** and add your Vercel domain(s) under **Authentication → URL Configuration → Redirect URLs** so invitations and recovery links return to the app.

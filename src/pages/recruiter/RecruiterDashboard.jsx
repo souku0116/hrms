@@ -31,6 +31,7 @@ import {
 import Button from "@/components/ui/Button";
 import Input from "@/components/ui/Input";
 import Modal from "@/components/ui/Modal";
+import { openCandidateResume, uploadCandidateResume, validateResumeFile } from "@/lib/candidateResumes";
 import { useAuth } from "@/context/AuthContext";
 import supabase from "@/lib/supabaseClient";
 import { ROUTES } from "@/routes/routeConstants";
@@ -66,20 +67,8 @@ const emptyCandidateForm = {
   skills: "",
   source: "manual",
   notes: "",
-  resume_drive_url: "",
+  resume_file: null,
 };
-
-function isGoogleDriveUrl(value) {
-  try {
-    const url = new URL(value);
-    return (
-      url.protocol === "https:" &&
-      ["drive.google.com", "docs.google.com"].includes(url.hostname.toLowerCase())
-    );
-  } catch {
-    return false;
-  }
-}
 
 export default function RecruiterDashboard() {
   const { user, profile } = useAuth();
@@ -139,7 +128,7 @@ export default function RecruiterDashboard() {
           .order("created_at", { ascending: false }),
         supabase
           .from("candidates")
-          .select("id,first_name,last_name,email,phone,location,current_title,current_company,years_experience,skills,source,status,resume_drive_url,created_at")
+          .select("id,first_name,last_name,email,phone,location,current_title,current_company,years_experience,skills,source,status,resume_drive_url,resume_storage_path,created_at")
           .eq("organization_id", orgId)
           .order("created_at", { ascending: false })
           .limit(6),
@@ -268,12 +257,17 @@ export default function RecruiterDashboard() {
     e.preventDefault();
     setCandidateModalError("");
 
-    if (!isGoogleDriveUrl(candidateForm.resume_drive_url.trim())) {
-      setCandidateModalError("Please provide a valid Google Drive or Docs resume link.");
+    const fileError = validateResumeFile(candidateForm.resume_file);
+    if (fileError) {
+      setCandidateModalError(fileError);
       return;
     }
 
     setSavingCandidate(true);
+    let resumePath;
+    let savedCandidate = false;
+    try {
+    resumePath = await uploadCandidateResume(candidateForm.resume_file, profile.organization_id, user.id);
     const payload = {
       organization_id: profile.organization_id,
       created_by: user.id,
@@ -288,23 +282,23 @@ export default function RecruiterDashboard() {
       skills: candidateForm.skills.split(",").map((s) => s.trim()).filter(Boolean),
       source: candidateForm.source,
       notes: candidateForm.notes.trim() || null,
-      resume_drive_url: candidateForm.resume_drive_url.trim(),
+      resume_drive_url: null,
+      resume_storage_path: resumePath,
     };
 
     const { error: insertErr } = await supabase.from("candidates").insert(payload);
-    if (insertErr) {
-      setCandidateModalError(
-        insertErr.code === "23505"
-          ? "A candidate with this email already exists."
-          : insertErr.message
-      );
-    } else {
+    if (insertErr) throw insertErr;
+    savedCandidate = true;
       setActionSuccess("Candidate added to Resume Pool!");
       setCandidateForm(emptyCandidateForm);
       setCandidateModalOpen(false);
       await loadDashboardData(true);
+    } catch (saveError) {
+      if (resumePath && !savedCandidate) await supabase.storage.from("candidate-resumes").remove([resumePath]);
+      setCandidateModalError(saveError.code === "23505" ? "A candidate with this email already exists." : saveError.message);
+    } finally {
+      setSavingCandidate(false);
     }
-    setSavingCandidate(false);
   }
 
   const currentDate = new Date().toLocaleDateString(undefined, {
@@ -481,7 +475,7 @@ export default function RecruiterDashboard() {
             <span className="text-xs text-textSecondary">candidate profiles</span>
           </div>
           <div className="mt-3 flex items-center justify-between pt-2 border-t border-border/60 text-xs">
-            <span className="text-purple-600 font-medium">Google Drive linked</span>
+            <span className="text-purple-600 font-medium">Resume pool available</span>
             <Link to={ROUTES.RESUME_POOL} className="text-primary hover:underline flex items-center gap-1">
               Browse pool <ArrowRight className="h-3 w-3" />
             </Link>
@@ -885,7 +879,7 @@ export default function RecruiterDashboard() {
                   Resume Pool is empty
                 </h3>
                 <p className="mt-1 text-xs text-textSecondary">
-                  Add candidates with their Google Drive resume links.
+                  Upload resumes and add candidates to the pool.
                 </p>
                 <button
                   onClick={() => setCandidateModalOpen(true)}
@@ -950,14 +944,15 @@ export default function RecruiterDashboard() {
                           ? `${c.years_experience} yrs exp`
                           : c.location || "Active"}
                       </span>
-                      {c.resume_drive_url && (
+                      {(c.resume_storage_path || c.resume_drive_url) && (
                         <a
-                          href={c.resume_drive_url}
-                          target="_blank"
-                          rel="noopener noreferrer"
+                          href={c.resume_drive_url || undefined}
+                          onClick={c.resume_storage_path ? async (event) => { event.preventDefault(); try { await openCandidateResume(c.resume_storage_path); } catch (openError) { setError(openError.message); } } : undefined}
+                          target={c.resume_drive_url ? "_blank" : undefined}
+                          rel={c.resume_drive_url ? "noopener noreferrer" : undefined}
                           className="inline-flex items-center gap-1 font-medium text-primary hover:underline"
                         >
-                          Drive Resume <ExternalLink className="h-3 w-3" />
+                          Resume <ExternalLink className="h-3 w-3" />
                         </a>
                       )}
                     </div>
@@ -1082,13 +1077,13 @@ export default function RecruiterDashboard() {
           />
           <Input
             className="sm:col-span-2"
-            label="Google Drive resume link"
-            description="Use a drive.google.com or docs.google.com link."
-            type="url"
+            label="Resume file"
+            description="PDF, DOC, or DOCX; up to 10 MB. Enter candidate details below."
+            type="file"
+            accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
             required
-            value={candidateForm.resume_drive_url}
             onChange={(e) =>
-              setCandidateForm({ ...candidateForm, resume_drive_url: e.target.value })
+              setCandidateForm({ ...candidateForm, resume_file: e.target.files?.[0] || null })
             }
           />
           <label className="block text-sm font-medium sm:col-span-2">
