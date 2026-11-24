@@ -20,6 +20,8 @@
     "clsx": "^2.1.1",
     "framer-motion": "^12.43.0",
     "lucide-react": "^0.487.0",
+    "mammoth": "^1.13.0",
+    "pdfjs-dist": "^6.5.438",
     "postgres": "^3.4.7",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",

@@ -17,7 +17,7 @@ const FAQ_ITEMS = [
   {
     question: "What are the differences between Admin and Recruiter roles?",
     answer:
-      "Administrators possess organizational management authority—they configure departments, office locations, team members, and hold approval authority over pending requisitions. Recruiters focus on execution: drafting requisitions, submitting them for approval, and maintaining the candidate talent pool with Google Drive resume attachments.",
+      "Administrators possess organizational management authority—they configure departments, office locations, team members, and hold approval authority over pending requisitions. Recruiters focus on execution: drafting requisitions, submitting them for approval, and maintaining the candidate talent pool with private Supabase Storage resume files.",
   },
   {
     question: "How does the Requisition Approval Lifecycle work?",
@@ -30,9 +30,9 @@ const FAQ_ITEMS = [
       "WorkSync uses multi-tenant Row Level Security (RLS) in Supabase. Every requisition, candidate profile, department, and location is strictly keyed by organization_id. Recruiters and administrators can only view and manage records matching their assigned organization membership.",
   },
   {
-    question: "Why are Google Drive resume URLs enforced?",
+    question: "Where are resumes stored and who can open them?",
     answer:
-      "To ensure corporate compliance, security, and low platform storage overhead, resumes are maintained in Google Drive / Google Docs. Recruiters paste the shareable Drive link, ensuring document access policies remain managed within the organization's Google Workspace.",
+      "Resumes are stored in a private Supabase Storage bucket. Only authorized recruiters and administrators in the candidate's organization can request a short-lived link to open a resume. Existing Google Drive links remain supported for older candidate records.",
   },
   {
     question: "Where are security audit logs stored?",

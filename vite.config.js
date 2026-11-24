@@ -41,6 +41,9 @@ function localApiPlugin(mode) {
     "VITE_SUPABASE_ANON_KEY",
     "SUPABASE_SECRET_KEY",
     "SUPABASE_SERVICE_ROLE_KEY",
+    "GROQ_API_KEY",
+    "GROQ_MODEL",
+    "GROQ_VISION_MODEL",
   ];
   for (const name of serverEnvNames) {
     if (!process.env[name] && fileEnv[name]) process.env[name] = fileEnv[name];
